@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+
+/* Global, mobile-first base styles. Tailwind v4 is configured here via the
+   single @import above (no tailwind.config.js needed for the defaults). */
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
