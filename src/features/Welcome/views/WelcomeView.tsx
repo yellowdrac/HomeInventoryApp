@@ -1,46 +1,47 @@
-import { FullLayout } from '@/core/layouts/FullLayout';
 import { Button } from '@/core/components/ui';
 import { env } from '@/core/config/env';
 import { useHealth } from '@features/Welcome/hooks/useHealth';
 
 /**
- * Phase 0 landing view. Renders the app shell and the live backend connection
- * status (loading / connected + version / clear error).
+ * Landing view for the authenticated area. Renders the live backend connection
+ * status (loading / connected + version / clear error). The app shell/header is
+ * provided by the protected layout.
  */
 export function WelcomeView() {
   const { data, isPending, isError, error, refetch, isFetching } = useHealth();
 
   return (
-    <FullLayout>
-      <section className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Welcome to HomeInventory
-          </h1>
-          <p className="max-w-prose text-slate-600">
-            Shared household inventory. This is the Phase&nbsp;0 scaffold: the
-            app shell and a live check against the backend health endpoint.
-          </p>
-        </div>
+    <section className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          Welcome to HomeInventory
+        </h1>
+        <p className="max-w-prose text-slate-600">
+          Shared household inventory. You are signed in. Below is a live check
+          against the backend health endpoint.
+        </p>
+      </div>
 
-        <ConnectionStatus
-          isPending={isPending}
-          isError={isError}
-          error={error}
-          version={data?.version}
-          status={data?.status}
-        />
+      <ConnectionStatus
+        isPending={isPending}
+        isError={isError}
+        error={error}
+        version={data?.version}
+        status={data?.status}
+      />
 
-        <div className="flex items-center gap-3">
-          <Button onClick={() => refetch()} disabled={isFetching}>
-            {isFetching ? 'Checking…' : 'Re-check connection'}
-          </Button>
-          <span className="text-sm text-slate-500">
-            API: <code className="font-mono">{env.apiUrl}</code>
-          </span>
-        </div>
-      </section>
-    </FullLayout>
+      <div className="flex items-center gap-3">
+        <Button onClick={() => refetch()} disabled={isFetching}>
+          {isFetching ? 'Checking…' : 'Re-check connection'}
+        </Button>
+        <span className="text-sm text-slate-500">
+          API:{' '}
+          <code className="font-mono">
+            {env.apiUrl || 'same origin (dev proxy)'}
+          </code>
+        </span>
+      </div>
+    </section>
   );
 }
 

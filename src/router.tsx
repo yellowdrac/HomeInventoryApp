@@ -1,13 +1,49 @@
-import { useRoutes, type RouteObject } from 'react-router';
+import { createElement } from 'react';
+import { Navigate, useRoutes, type RouteObject } from 'react-router';
+import {
+  PublicOnlyRoute,
+  RequireAuth,
+  RequireHousehold,
+} from '@/core/auth/guards';
+import { ProtectedLayout } from '@/core/auth/ProtectedLayout';
 import { welcomeRoutes } from '@features/Welcome/routes';
+import { authRoutes } from '@features/Auth/routes';
+import {
+  householdRoutes,
+  householdSetupRoutes,
+} from '@features/Household/routes';
 
 /**
- * Aggregated route table. Each feature exports its own routes; add them here.
+ * Aggregated route table.
+ *
+ * Layering:
+ *  - Public-only routes (login/register): redirected away once authenticated.
+ *  - Authenticated area (ProtectedLayout): requires a session.
+ *      - Household setup: reachable without a household.
+ *      - Everything else: requires an existing household.
  */
 const routes: RouteObject[] = [
-  ...welcomeRoutes,
-  // Fallback: redirect unknown paths to the Welcome view for now.
-  { path: '*', element: welcomeRoutes[0]?.element },
+  {
+    element: createElement(PublicOnlyRoute),
+    children: [...authRoutes],
+  },
+  {
+    element: createElement(RequireAuth),
+    children: [
+      {
+        element: createElement(ProtectedLayout),
+        children: [
+          ...householdSetupRoutes,
+          {
+            element: createElement(RequireHousehold),
+            children: [...welcomeRoutes, ...householdRoutes],
+          },
+        ],
+      },
+    ],
+  },
+  // Unknown paths fall back to the app root (guards redirect as appropriate).
+  { path: '*', element: createElement(Navigate, { to: '/', replace: true }) },
 ];
 
 export function AppRoutes() {
