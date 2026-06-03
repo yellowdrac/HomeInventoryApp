@@ -6,23 +6,21 @@
  * at startup.
  */
 
-const DEFAULT_API_URL = 'http://localhost:5080';
-
-function readApiUrl(): string {
-  const value = import.meta.env.VITE_API_URL?.trim();
-
-  if (!value) {
-    // Fail loud in development, fall back gracefully so the app still boots.
-    console.warn(
-      `[env] VITE_API_URL is not set. Falling back to "${DEFAULT_API_URL}". ` +
-        'Create a .env file from .env.example to configure it.',
-    );
-    return DEFAULT_API_URL;
+function readApiBaseUrl(): string {
+  // In development, requests go through the Vite dev proxy (see vite.config.ts):
+  // the app calls same-origin paths like `/api/...` and `/health`, which avoids
+  // CORS entirely. An empty base URL keeps every request relative.
+  if (import.meta.env.DEV) {
+    return '';
   }
 
-  return value.replace(/\/+$/, ''); // strip trailing slashes for safe joins
+  // In production, a same-origin reverse proxy is assumed by default. Set
+  // VITE_API_URL only when the API is served from a different origin.
+  const value = import.meta.env.VITE_API_URL?.trim();
+  return value ? value.replace(/\/+$/, '') : '';
 }
 
 export const env = {
-  apiUrl: readApiUrl(),
+  /** Base URL for API requests. Empty string means "same origin". */
+  apiUrl: readApiBaseUrl(),
 } as const;

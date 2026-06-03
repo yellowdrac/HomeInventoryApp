@@ -1,9 +1,12 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { cn } from '@/core/lib/cn';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  /** Shows a spinner, sets `aria-busy` and disables the button while truthy. */
+  isLoading?: boolean;
   children: ReactNode;
 }
 
@@ -28,15 +31,25 @@ const variantClasses: Record<ButtonVariant, string> = {
  */
 export function Button({
   variant = 'primary',
-  className = '',
+  className,
+  isLoading = false,
+  disabled,
   children,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${className}`.trim()}
+      className={cn(baseClasses, variantClasses[variant], className)}
+      aria-busy={isLoading || undefined}
+      disabled={disabled || isLoading}
       {...props}
     >
+      {isLoading ? (
+        <span
+          aria-hidden="true"
+          className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+        />
+      ) : null}
       {children}
     </button>
   );
