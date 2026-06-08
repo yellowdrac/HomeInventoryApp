@@ -1,4 +1,10 @@
 import type { ReactNode } from 'react';
+import {
+  HomeIcon,
+  PackageIcon,
+  ShieldCheckIcon,
+  UsersIcon,
+} from '@/core/components/icons';
 
 interface AuthCardProps {
   title: string;
@@ -9,8 +15,58 @@ interface AuthCardProps {
 }
 
 /**
- * Centered card shell for the authentication views. Mobile-first: full width on
- * small screens, constrained and centered on larger viewports.
+ * Reference photo of an organized home interior, layered under the brand
+ * gradient so foreground text always meets contrast (and the gradient alone
+ * still looks right if the remote image fails to load).
+ */
+const BRAND_BACKDROP =
+  'linear-gradient(160deg, rgba(15,23,42,0.55) 0%, rgba(6,78,59,0.78) 55%, rgba(15,23,42,0.94) 100%), ' +
+  "url('https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1400&q=80')";
+
+const FEATURES = [
+  {
+    icon: PackageIcon,
+    title: 'Track everything you own',
+    body: 'Catalog items room by room, box by box — and find them in seconds.',
+  },
+  {
+    icon: UsersIcon,
+    title: 'Shared with your household',
+    body: 'Everyone stays in sync with a single, always-current inventory.',
+  },
+  {
+    icon: ShieldCheckIcon,
+    title: 'Private by default',
+    body: 'Your home data stays yours, secured behind your account.',
+  },
+] as const;
+
+/** Compact logo lockup reused on the brand panel and the mobile header. */
+function Logo({ tone }: { tone: 'light' | 'dark' }) {
+  const text = tone === 'light' ? 'text-white' : 'text-slate-900';
+  const badge =
+    tone === 'light'
+      ? 'bg-white/15 text-white ring-1 ring-inset ring-white/25'
+      : 'bg-emerald-600 text-white';
+  return (
+    <div className="flex items-center gap-2.5">
+      <span
+        className={`flex size-9 items-center justify-center rounded-xl ${badge}`}
+      >
+        <HomeIcon className="size-5" />
+      </span>
+      <span className={`text-lg font-bold tracking-tight ${text}`}>
+        HomeInventory
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Split-screen shell for the authentication views. The left brand panel (shown
+ * from `lg` up) carries the reference imagery and value props; the right side
+ * hosts the form. On mobile it collapses to a single centered column with a
+ * compact logo header.
  */
 export function AuthCard({
   title,
@@ -19,23 +75,71 @@ export function AuthCard({
   footer,
 }: AuthCardProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-10">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            {title}
-          </h1>
-          <p className="text-sm text-slate-600">{description}</p>
+    <div className="grid min-h-dvh lg:grid-cols-2">
+      {/* Brand panel */}
+      <aside
+        className="relative hidden flex-col justify-between overflow-hidden p-12 lg:flex"
+        style={{
+          backgroundImage: BRAND_BACKDROP,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <Logo tone="light" />
+
+        <div className="max-w-md">
+          <h2 className="text-balance text-4xl font-extrabold leading-tight tracking-tight text-white">
+            Everything you own, perfectly organized.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-emerald-50/80">
+            The calm, shared home inventory for the things that matter.
+          </p>
+
+          <ul className="mt-10 space-y-5">
+            {FEATURES.map(({ icon: FeatureIcon, title: ftitle, body }) => (
+              <li key={ftitle} className="flex gap-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white ring-1 ring-inset ring-white/15 backdrop-blur-sm">
+                  <FeatureIcon className="size-5" />
+                </span>
+                <div>
+                  <p className="font-semibold text-white">{ftitle}</p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-emerald-50/70">
+                    {body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          {children}
-        </div>
+        <p className="text-sm text-emerald-50/60">
+          &copy; {new Date().getFullYear()} HomeInventory
+        </p>
+      </aside>
 
-        {footer ? (
-          <div className="text-center text-sm text-slate-600">{footer}</div>
-        ) : null}
-      </div>
+      {/* Form panel */}
+      <main className="flex items-center justify-center bg-slate-50 px-4 py-10 sm:px-6">
+        <div className="w-full max-w-sm space-y-8">
+          <div className="lg:hidden">
+            <Logo tone="dark" />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              {title}
+            </h1>
+            <p className="text-sm text-slate-600">{description}</p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            {children}
+          </div>
+
+          {footer ? (
+            <div className="text-center text-sm text-slate-600">{footer}</div>
+          ) : null}
+        </div>
+      </main>
     </div>
   );
 }
