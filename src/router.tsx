@@ -12,6 +12,7 @@ import {
   householdRoutes,
   householdSetupRoutes,
 } from '@features/Household/routes';
+import { locationsRoutes } from '@features/Locations/routes';
 
 /**
  * Aggregated route table.
@@ -36,7 +37,11 @@ const routes: RouteObject[] = [
           ...householdSetupRoutes,
           {
             element: createElement(RequireHousehold),
-            children: [...welcomeRoutes, ...householdRoutes],
+            children: [
+              ...welcomeRoutes,
+              ...householdRoutes,
+              ...locationsRoutes,
+            ],
           },
         ],
       },
