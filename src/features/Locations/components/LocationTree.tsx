@@ -15,6 +15,8 @@ interface LocationTreeProps {
   onSelect: (node: LocationTreeNode) => void;
   /** Ids that cannot be selected (rendered as disabled). */
   disabledIds?: Set<string> | undefined;
+  /** Ids to expand on mount in addition to the roots (e.g. a deep-linked path). */
+  defaultExpandedIds?: Iterable<string> | undefined;
   /** Accessible label for the tree container. */
   ariaLabel?: string;
 }
@@ -31,13 +33,22 @@ export function LocationTree({
   selectedId,
   onSelect,
   disabledIds,
+  defaultExpandedIds,
   ariaLabel = 'Locations',
 }: LocationTreeProps) {
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(
-    () => new Set(nodes.filter((n) => n.children.length > 0).map((n) => n.id)),
-  );
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
+    const initial = new Set(
+      nodes.filter((n) => n.children.length > 0).map((n) => n.id),
+    );
+    if (defaultExpandedIds) {
+      for (const id of defaultExpandedIds) {
+        initial.add(id);
+      }
+    }
+    return initial;
+  });
   const [activeId, setActiveId] = useState<string | null>(
-    () => nodes[0]?.id ?? null,
+    () => selectedId ?? nodes[0]?.id ?? null,
   );
   const itemRefs = useRef(new Map<string, HTMLLIElement>());
 

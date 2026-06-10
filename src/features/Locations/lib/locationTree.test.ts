@@ -3,6 +3,7 @@ import {
   flattenTree,
   flattenVisible,
   findNode,
+  findPath,
   collectSubtreeIds,
 } from '@features/Locations/lib/locationTree';
 import { LocationType, type LocationTreeNode } from '@features/Locations/types';
@@ -63,6 +64,20 @@ describe('findNode', () => {
 
   it('returns undefined for an unknown id', () => {
     expect(findNode(tree, 'missing')).toBeUndefined();
+  });
+});
+
+describe('findPath', () => {
+  it('returns the chain from the root down to the node, inclusive', () => {
+    expect(findPath(tree, 'drawer').map((n) => n.id)).toEqual([
+      'house',
+      'kitchen',
+      'drawer',
+    ]);
+  });
+
+  it('returns an empty array for an unknown id', () => {
+    expect(findPath(tree, 'missing')).toEqual([]);
   });
 });
 

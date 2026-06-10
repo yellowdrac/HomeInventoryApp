@@ -56,6 +56,27 @@ export function findNode(
 }
 
 /**
+ * Returns the chain of nodes from a root down to the node with `id` (inclusive),
+ * or an empty array when the id is not found. Used to reveal a deep-linked node
+ * by expanding its ancestors.
+ */
+export function findPath(
+  nodes: LocationTreeNode[],
+  id: string,
+): LocationTreeNode[] {
+  for (const node of nodes) {
+    if (node.id === id) {
+      return [node];
+    }
+    const childPath = findPath(node.children, id);
+    if (childPath.length > 0) {
+      return [node, ...childPath];
+    }
+  }
+  return [];
+}
+
+/**
  * Collects the ids of a node and all of its descendants. These are the invalid
  * "move" targets: a location cannot become a child of itself or its subtree.
  */
