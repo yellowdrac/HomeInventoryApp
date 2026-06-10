@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/core/lib/cn';
 import { XIcon } from '@/core/components/icons';
@@ -16,6 +16,11 @@ interface DialogProps {
    * so assistive tech treats it as an interruption that needs a response.
    */
   role?: 'dialog' | 'alertdialog';
+  /**
+   * Element to focus when the dialog opens. Defaults to the first focusable
+   * element; pass this to focus a specific control (e.g. a search input).
+   */
+  initialFocusRef?: RefObject<HTMLElement | null>;
 }
 
 const FOCUSABLE_SELECTOR =
@@ -41,6 +46,7 @@ export function Dialog({
   children,
   footer,
   role = 'dialog',
+  initialFocusRef,
 }: DialogProps) {
   const surfaceRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -53,9 +59,10 @@ export function Dialog({
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const surface = surfaceRef.current;
-    // Move focus into the dialog (first focusable, else the surface itself).
+    // Move focus into the dialog: a caller-specified element if given, else the
+    // first focusable, else the surface itself.
     const focusables = surface ? getFocusable(surface) : [];
-    (focusables[0] ?? surface)?.focus();
+    (initialFocusRef?.current ?? focusables[0] ?? surface)?.focus();
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -93,7 +100,7 @@ export function Dialog({
       document.body.style.overflow = overflow;
       previouslyFocused?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open, onClose, initialFocusRef]);
 
   if (!open) {
     return null;

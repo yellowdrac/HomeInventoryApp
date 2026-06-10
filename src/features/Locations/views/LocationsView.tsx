@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { Alert, Button } from '@/core/components/ui';
 import { PlusIcon } from '@/core/components/icons';
 import type { LocationTreeNode } from '@features/Locations/types';
 import { useLocationTree } from '@features/Locations/hooks/useLocationTree';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
-import { findNode } from '@features/Locations/lib/locationTree';
+import { findNode, findPath } from '@features/Locations/lib/locationTree';
 import { LocationTree } from '@features/Locations/components/LocationTree';
 import { LocationContents } from '@features/Locations/components/LocationContents';
 import { LocationsEmptyState } from '@features/Locations/components/LocationsEmptyState';
@@ -27,12 +28,29 @@ type DialogState =
  */
 export function LocationsView() {
   const { data, isPending, isError, error } = useLocationTree();
+  const [searchParams] = useSearchParams();
+  const locationParam = searchParams.get('location');
   const [dialog, setDialog] = useState<DialogState>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(locationParam);
+
+  // Follow a deep link (?location=...) when arriving from search or elsewhere.
+  useEffect(() => {
+    if (locationParam) {
+      setSelectedId(locationParam);
+    }
+  }, [locationParam]);
 
   const closeDialog = () => setDialog(null);
   const selectedNode =
     selectedId && data ? (findNode(data, selectedId) ?? null) : null;
+
+  // Expand the ancestors of a deep-linked node so it is revealed in the tree.
+  const defaultExpandedIds = useMemo(() => {
+    if (!locationParam || !data) {
+      return undefined;
+    }
+    return findPath(data, locationParam).map((node) => node.id);
+  }, [locationParam, data]);
 
   return (
     <section className="space-y-6">
@@ -71,6 +89,7 @@ export function LocationsView() {
             <LocationTree
               nodes={data}
               selectedId={selectedId}
+              defaultExpandedIds={defaultExpandedIds}
               onSelect={(node) => setSelectedId(node.id)}
               actions={{
                 onAddChild: (node) =>

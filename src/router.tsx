@@ -15,6 +15,7 @@ import {
 import { locationsRoutes } from '@features/Locations/routes';
 import { itemsRoutes } from '@features/Items/routes';
 import { movementsRoutes } from '@features/Movements/routes';
+import { searchRoutes } from '@features/Search/routes';
 
 /**
  * Aggregated route table.
@@ -45,6 +46,7 @@ const routes: RouteObject[] = [
               ...locationsRoutes,
               ...itemsRoutes,
               ...movementsRoutes,
+              ...searchRoutes,
             ],
           },
         ],

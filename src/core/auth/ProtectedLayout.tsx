@@ -3,6 +3,7 @@ import { FullLayout } from '@/core/layouts/FullLayout';
 import { Button } from '@/core/components/ui';
 import { cn } from '@/core/lib/cn';
 import { useAuth } from '@features/Auth/hooks/useAuth';
+import { GlobalSearch } from '@features/Search/components/GlobalSearch';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', end: true },
@@ -24,6 +25,7 @@ export function ProtectedLayout() {
     <FullLayout
       headerEnd={
         <>
+          {hasHousehold ? <GlobalSearch /> : null}
           {hasHousehold ? (
             <nav aria-label="Primary" className="hidden sm:block">
               <ul className="flex items-center gap-1">
