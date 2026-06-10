@@ -1,6 +1,8 @@
 import {
   MapPinIcon,
+  MinusIcon,
   MoreVerticalIcon,
+  MoveIcon,
   PencilIcon,
   TrashIcon,
 } from '@/core/components/icons';
@@ -15,6 +17,9 @@ import type { Item, StockLot } from '@features/Items/types';
 interface StockLotListProps {
   item: Item;
   lots: StockLot[];
+  onMove: (lot: StockLot) => void;
+  onConsume: (lot: StockLot) => void;
+  onDiscard: (lot: StockLot) => void;
   onEdit: (lot: StockLot) => void;
   onDelete: (lot: StockLot) => void;
 }
@@ -23,6 +28,9 @@ interface StockLotListProps {
 export function StockLotList({
   item,
   lots,
+  onMove,
+  onConsume,
+  onDiscard,
   onEdit,
   onDelete,
 }: StockLotListProps) {
@@ -32,6 +40,22 @@ export function StockLotList({
         const expiration = formatDate(lot.expirationDate);
         const acquired = formatDate(lot.acquiredDate);
         const menuItems: DropdownMenuItem[] = [
+          {
+            label: 'Move',
+            icon: <MoveIcon className="size-4" />,
+            onSelect: () => onMove(lot),
+          },
+          {
+            label: 'Consume',
+            icon: <MinusIcon className="size-4" />,
+            onSelect: () => onConsume(lot),
+          },
+          {
+            label: 'Discard',
+            icon: <TrashIcon className="size-4" />,
+            tone: 'danger',
+            onSelect: () => onDiscard(lot),
+          },
           {
             label: 'Edit',
             icon: <PencilIcon className="size-4" />,

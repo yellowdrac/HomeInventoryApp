@@ -33,6 +33,7 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
     toggle,
     activeId,
     selectedId,
+    isDisabled,
     onSelect,
     registerItem,
     onItemKeyDown,
@@ -44,6 +45,7 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
   const expanded = hasChildren && isExpanded(node.id);
   const isActive = activeId === node.id;
   const isSelected = selectedId === node.id;
+  const disabled = isDisabled(node.id);
 
   useEffect(() => {
     registerItem(node.id, itemRef.current);
@@ -82,7 +84,8 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
       role="treeitem"
       aria-level={level}
       aria-expanded={hasChildren ? expanded : undefined}
-      aria-selected={isSelected}
+      aria-selected={disabled ? undefined : isSelected}
+      aria-disabled={disabled || undefined}
       tabIndex={isActive ? 0 : -1}
       onKeyDown={(event) => onItemKeyDown(event, node)}
       className="group/item outline-none"
@@ -90,13 +93,20 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
       <div
         onClick={(event) => {
           event.stopPropagation();
-          onSelect(node);
+          if (!disabled) {
+            onSelect(node);
+          }
         }}
         style={{ paddingLeft: `${(level - 1) * 1.25 + 0.5}rem` }}
         className={cn(
           'flex items-center gap-1.5 rounded-lg py-1.5 pr-1.5 transition-colors',
-          'cursor-pointer group-focus-visible/item:ring-2 group-focus-visible/item:ring-emerald-600',
-          isSelected ? 'bg-emerald-50' : 'hover:bg-slate-100',
+          'group-focus-visible/item:ring-2 group-focus-visible/item:ring-emerald-600',
+          disabled
+            ? 'cursor-not-allowed opacity-50'
+            : cn(
+                'cursor-pointer',
+                isSelected ? 'bg-emerald-50' : 'hover:bg-slate-100',
+              ),
         )}
       >
         {hasChildren ? (

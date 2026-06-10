@@ -14,6 +14,8 @@ export interface LocationTreeContextValue {
   toggle: (id: string) => void;
   activeId: string | null;
   selectedId: string | null;
+  /** Whether a node is non-selectable (e.g. the current location of a move). */
+  isDisabled: (id: string) => boolean;
   onSelect: (node: LocationTreeNode) => void;
   registerItem: (id: string, el: HTMLLIElement | null) => void;
   onItemKeyDown: (

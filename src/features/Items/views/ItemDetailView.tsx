@@ -17,12 +17,19 @@ import { DeleteItemDialog } from '@features/Items/components/DeleteItemDialog';
 import { AddStockDialog } from '@features/Items/components/AddStockDialog';
 import { EditStockLotDialog } from '@features/Items/components/EditStockLotDialog';
 import { DeleteStockLotDialog } from '@features/Items/components/DeleteStockLotDialog';
-import type { StockLot } from '@features/Items/types';
+import { MoveStockDialog } from '@features/Items/components/MoveStockDialog';
+import { ConsumeStockDialog } from '@features/Items/components/ConsumeStockDialog';
+import { DiscardStockDialog } from '@features/Items/components/DiscardStockDialog';
+import { TrackingType, type StockLot } from '@features/Items/types';
+import { ItemHistory } from '@features/Items/components/ItemHistory';
 
 type Dialog =
   | { kind: 'edit-item' }
   | { kind: 'delete-item' }
   | { kind: 'add-stock' }
+  | { kind: 'move-lot'; lot: StockLot }
+  | { kind: 'consume-lot'; lot: StockLot }
+  | { kind: 'discard-lot'; lot: StockLot }
   | { kind: 'edit-lot'; lot: StockLot }
   | { kind: 'delete-lot'; lot: StockLot }
   | null;
@@ -123,12 +130,17 @@ export function ItemDetailView() {
                 <StockLotList
                   item={item}
                   lots={item.lots}
+                  onMove={(lot) => setDialog({ kind: 'move-lot', lot })}
+                  onConsume={(lot) => setDialog({ kind: 'consume-lot', lot })}
+                  onDiscard={(lot) => setDialog({ kind: 'discard-lot', lot })}
                   onEdit={(lot) => setDialog({ kind: 'edit-lot', lot })}
                   onDelete={(lot) => setDialog({ kind: 'delete-lot', lot })}
                 />
               )}
             </div>
           </div>
+
+          <ItemHistory itemId={item.id} />
 
           {dialog?.kind === 'edit-item' ? (
             <EditItemDialog open onClose={closeDialog} item={item} />
@@ -145,6 +157,34 @@ export function ItemDetailView() {
 
           {dialog?.kind === 'add-stock' ? (
             <AddStockDialog open onClose={closeDialog} item={item} />
+          ) : null}
+
+          {dialog?.kind === 'move-lot' ? (
+            <MoveStockDialog
+              open
+              onClose={closeDialog}
+              lot={dialog.lot}
+              isUnique={item.trackingType === TrackingType.Unique}
+              unit={item.unit}
+            />
+          ) : null}
+
+          {dialog?.kind === 'consume-lot' ? (
+            <ConsumeStockDialog
+              open
+              onClose={closeDialog}
+              lot={dialog.lot}
+              unit={item.unit}
+            />
+          ) : null}
+
+          {dialog?.kind === 'discard-lot' ? (
+            <DiscardStockDialog
+              open
+              onClose={closeDialog}
+              lot={dialog.lot}
+              unit={item.unit}
+            />
           ) : null}
 
           {dialog?.kind === 'edit-lot' ? (

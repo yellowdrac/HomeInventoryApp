@@ -1,10 +1,13 @@
 import { apiClient } from '@/core/api/client';
 import type {
   AddStockRequest,
+  ConsumeStockRequest,
   CreateItemRequest,
+  DiscardStockRequest,
   GetItemsParams,
   Item,
   ItemDetail,
+  MoveStockRequest,
   PagedResult,
   StockLot,
   UpdateItemRequest,
@@ -63,5 +66,27 @@ export const itemsApi = {
 
   async deleteStockLot(lotId: string): Promise<void> {
     await apiClient.delete(`/api/stock-lots/${lotId}`);
+  },
+
+  async moveStock(lotId: string, payload: MoveStockRequest): Promise<StockLot> {
+    const { data } = await apiClient.post<StockLot>(
+      `/api/stock-lots/${lotId}/move`,
+      payload,
+    );
+    return data;
+  },
+
+  async consumeStock(
+    lotId: string,
+    payload: ConsumeStockRequest,
+  ): Promise<void> {
+    await apiClient.post(`/api/stock-lots/${lotId}/consume`, payload);
+  },
+
+  async discardStock(
+    lotId: string,
+    payload: DiscardStockRequest,
+  ): Promise<void> {
+    await apiClient.post(`/api/stock-lots/${lotId}/discard`, payload);
   },
 };
