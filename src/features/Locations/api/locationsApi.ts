@@ -1,4 +1,5 @@
 import { apiClient } from '@/core/api/client';
+import type { StockLot } from '@features/Items/types';
 import type {
   CreateLocationRequest,
   LocationDetail,
@@ -54,5 +55,12 @@ export const locationsApi = {
 
   async remove(id: string): Promise<void> {
     await apiClient.delete(`/api/locations/${id}`);
+  },
+
+  async getContents(id: string): Promise<StockLot[]> {
+    const { data } = await apiClient.get<StockLot[]>(
+      `/api/locations/${id}/contents`,
+    );
+    return data;
   },
 };

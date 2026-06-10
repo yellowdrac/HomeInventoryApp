@@ -20,7 +20,8 @@ export interface LocationTreeContextValue {
     event: React.KeyboardEvent<HTMLLIElement>,
     node: LocationTreeNode,
   ) => void;
-  actions: LocationTreeActions;
+  /** Per-node menu actions; `undefined` when the tree is a read-only picker. */
+  actions: LocationTreeActions | undefined;
 }
 
 const LocationTreeContext = createContext<LocationTreeContextValue | null>(null);
