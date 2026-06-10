@@ -4,6 +4,7 @@ import { Button } from '@/core/components/ui';
 import { cn } from '@/core/lib/cn';
 import { useAuth } from '@features/Auth/hooks/useAuth';
 import { GlobalSearch } from '@features/Search/components/GlobalSearch';
+import { KitchenNavLink } from '@features/Kitchen/components/KitchenNavLink';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', end: true },
@@ -47,6 +48,9 @@ export function ProtectedLayout() {
                     </NavLink>
                   </li>
                 ))}
+                <li>
+                  <KitchenNavLink />
+                </li>
               </ul>
             </nav>
           ) : null}

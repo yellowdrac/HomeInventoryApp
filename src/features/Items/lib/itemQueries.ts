@@ -6,7 +6,8 @@ import type { QueryClient } from '@tanstack/react-query';
  *
  * Centralized on purpose: stock mutations all funnel their cache effects
  * through here. Phase 4 stock actions (move/consume/discard) also write a
- * movement, so the movement history is invalidated here too.
+ * movement, so the movement history is invalidated here too, and Phase 6's
+ * expiration/kitchen views are derived from the same lots.
  */
 export function invalidateItemData(
   queryClient: QueryClient,
@@ -23,4 +24,7 @@ export function invalidateItemData(
   void queryClient.invalidateQueries({ queryKey: ['locations', 'contents'] });
   // The movement history grows with every stock change.
   void queryClient.invalidateQueries({ queryKey: ['movements'] });
+  // The expiration list and kitchen overview are derived from perishable lots.
+  void queryClient.invalidateQueries({ queryKey: ['expirations'] });
+  void queryClient.invalidateQueries({ queryKey: ['kitchen'] });
 }
