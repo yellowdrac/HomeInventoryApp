@@ -13,6 +13,8 @@ interface LocationTreeProps {
   actions?: LocationTreeActions;
   selectedId: string | null;
   onSelect: (node: LocationTreeNode) => void;
+  /** Ids that cannot be selected (rendered as disabled). */
+  disabledIds?: Set<string> | undefined;
   /** Accessible label for the tree container. */
   ariaLabel?: string;
 }
@@ -28,6 +30,7 @@ export function LocationTree({
   actions,
   selectedId,
   onSelect,
+  disabledIds,
   ariaLabel = 'Locations',
 }: LocationTreeProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
@@ -41,6 +44,11 @@ export function LocationTree({
   const isExpanded = useCallback(
     (id: string) => expandedIds.has(id),
     [expandedIds],
+  );
+
+  const isDisabled = useCallback(
+    (id: string) => disabledIds?.has(id) ?? false,
+    [disabledIds],
   );
 
   const setExpanded = useCallback((id: string, value: boolean) => {
@@ -144,7 +152,8 @@ export function LocationTree({
         case 'Enter':
         case ' ': {
           if (
-            (event.target as HTMLElement).getAttribute('role') === 'treeitem'
+            (event.target as HTMLElement).getAttribute('role') === 'treeitem' &&
+            !isDisabled(node.id)
           ) {
             event.preventDefault();
             onSelect(node);
@@ -155,7 +164,7 @@ export function LocationTree({
           break;
       }
     },
-    [nodes, expandedIds, focusItem, setExpanded, onSelect],
+    [nodes, expandedIds, focusItem, setExpanded, onSelect, isDisabled],
   );
 
   const contextValue = useMemo(
@@ -164,6 +173,7 @@ export function LocationTree({
       toggle,
       activeId,
       selectedId,
+      isDisabled,
       onSelect,
       registerItem,
       onItemKeyDown,
@@ -174,6 +184,7 @@ export function LocationTree({
       toggle,
       activeId,
       selectedId,
+      isDisabled,
       onSelect,
       registerItem,
       onItemKeyDown,

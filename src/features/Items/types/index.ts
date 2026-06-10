@@ -102,3 +102,21 @@ export interface UpdateStockLotRequest {
   expirationDate: string | null;
   acquiredDate: string | null;
 }
+
+/** Body of `POST /api/stock-lots/{id}/move`. */
+export interface MoveStockRequest {
+  toLocationId: string;
+  quantity: number;
+}
+
+/** Body of `POST /api/stock-lots/{id}/consume`. */
+export interface ConsumeStockRequest {
+  quantity: number;
+  reason: string | null;
+}
+
+/** Body of `POST /api/stock-lots/{id}/discard`. */
+export interface DiscardStockRequest {
+  quantity: number;
+  reason: string | null;
+}

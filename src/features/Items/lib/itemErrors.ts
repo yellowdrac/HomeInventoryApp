@@ -16,6 +16,12 @@ const MESSAGE_BY_CODE: Record<string, string> = {
   'Stock.LocationNotFound': 'The selected location no longer exists.',
   'Stock.UniqueAlreadyStocked':
     'A unique-tracked item can only have a single stock lot.',
+  'Stock.InsufficientQuantity':
+    'That is more than the quantity available in this lot.',
+  'Stock.SameLocation':
+    'Pick a destination different from the current location.',
+  'Stock.UniqueMustMoveWholeLot':
+    'A unique-tracked item must be moved as a whole lot.',
 };
 
 /** Maps an item or stock error into a specific, user-facing message. */

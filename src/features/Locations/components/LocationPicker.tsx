@@ -8,6 +8,8 @@ interface LocationPickerProps {
   /** Currently selected location id, or `null` when none is chosen. */
   value: string | null;
   onChange: (locationId: string) => void;
+  /** Location ids that cannot be picked (e.g. the source of a move). */
+  disabledIds?: Set<string> | undefined;
   /** Marks the control as invalid for `aria-invalid`/error styling. */
   invalid?: boolean;
   'aria-describedby'?: string | undefined;
@@ -21,6 +23,7 @@ interface LocationPickerProps {
 export function LocationPicker({
   value,
   onChange,
+  disabledIds,
   invalid = false,
   'aria-describedby': describedBy,
 }: LocationPickerProps) {
@@ -68,6 +71,7 @@ export function LocationPicker({
           ariaLabel="Choose a location"
           selectedId={value}
           onSelect={(node) => onChange(node.id)}
+          disabledIds={disabledIds}
         />
       ) : null}
     </div>

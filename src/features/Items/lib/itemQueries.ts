@@ -5,8 +5,8 @@ import type { QueryClient } from '@tanstack/react-query';
  * the cache consistent after a create/update/delete or a stock change.
  *
  * Centralized on purpose: stock mutations all funnel their cache effects
- * through here, so Phase 4 (movement history) can extend the invalidation set
- * in one place instead of touching each hook.
+ * through here. Phase 4 stock actions (move/consume/discard) also write a
+ * movement, so the movement history is invalidated here too.
  */
 export function invalidateItemData(
   queryClient: QueryClient,
@@ -21,4 +21,6 @@ export function invalidateItemData(
   }
   // Location contents listings reflect stock placement.
   void queryClient.invalidateQueries({ queryKey: ['locations', 'contents'] });
+  // The movement history grows with every stock change.
+  void queryClient.invalidateQueries({ queryKey: ['movements'] });
 }
