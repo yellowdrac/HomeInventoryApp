@@ -4,7 +4,9 @@ import { PlusIcon } from '@/core/components/icons';
 import type { LocationTreeNode } from '@features/Locations/types';
 import { useLocationTree } from '@features/Locations/hooks/useLocationTree';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
+import { findNode } from '@features/Locations/lib/locationTree';
 import { LocationTree } from '@features/Locations/components/LocationTree';
+import { LocationContents } from '@features/Locations/components/LocationContents';
 import { LocationsEmptyState } from '@features/Locations/components/LocationsEmptyState';
 import { CreateLocationDialog } from '@features/Locations/components/CreateLocationDialog';
 import { EditLocationDialog } from '@features/Locations/components/EditLocationDialog';
@@ -29,6 +31,8 @@ export function LocationsView() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const closeDialog = () => setDialog(null);
+  const selectedNode =
+    selectedId && data ? (findNode(data, selectedId) ?? null) : null;
 
   return (
     <section className="space-y-6">
@@ -62,18 +66,34 @@ export function LocationsView() {
       ) : null}
 
       {data && data.length > 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3">
-          <LocationTree
-            nodes={data}
-            selectedId={selectedId}
-            onSelect={(node) => setSelectedId(node.id)}
-            actions={{
-              onAddChild: (node) => setDialog({ kind: 'create', parent: node }),
-              onEdit: (node) => setDialog({ kind: 'edit', node }),
-              onMove: (node) => setDialog({ kind: 'move', node }),
-              onDelete: (node) => setDialog({ kind: 'delete', node }),
-            }}
-          />
+        <div className="grid gap-4 lg:grid-cols-5">
+          <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3 lg:col-span-3">
+            <LocationTree
+              nodes={data}
+              selectedId={selectedId}
+              onSelect={(node) => setSelectedId(node.id)}
+              actions={{
+                onAddChild: (node) =>
+                  setDialog({ kind: 'create', parent: node }),
+                onEdit: (node) => setDialog({ kind: 'edit', node }),
+                onMove: (node) => setDialog({ kind: 'move', node }),
+                onDelete: (node) => setDialog({ kind: 'delete', node }),
+              }}
+            />
+          </div>
+
+          <div className="lg:col-span-2">
+            {selectedNode ? (
+              <LocationContents
+                locationId={selectedNode.id}
+                locationName={selectedNode.name}
+              />
+            ) : (
+              <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-500">
+                Select a location to see what is stored there.
+              </p>
+            )}
+          </div>
         </div>
       ) : null}
 

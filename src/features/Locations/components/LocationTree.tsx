@@ -9,9 +9,12 @@ import { LocationTreeItem } from '@features/Locations/components/LocationTreeIte
 
 interface LocationTreeProps {
   nodes: LocationTreeNode[];
-  actions: LocationTreeActions;
+  /** Per-node menu actions; omit to render a read-only selection tree. */
+  actions?: LocationTreeActions;
   selectedId: string | null;
   onSelect: (node: LocationTreeNode) => void;
+  /** Accessible label for the tree container. */
+  ariaLabel?: string;
 }
 
 /**
@@ -25,6 +28,7 @@ export function LocationTree({
   actions,
   selectedId,
   onSelect,
+  ariaLabel = 'Locations',
 }: LocationTreeProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
     () => new Set(nodes.filter((n) => n.children.length > 0).map((n) => n.id)),
@@ -179,7 +183,7 @@ export function LocationTree({
 
   return (
     <LocationTreeProvider value={contextValue}>
-      <ul role="tree" aria-label="Locations" className="space-y-0.5">
+      <ul role="tree" aria-label={ariaLabel} className="space-y-0.5">
         {nodes.map((node) => (
           <LocationTreeItem key={node.id} node={node} level={1} />
         ))}

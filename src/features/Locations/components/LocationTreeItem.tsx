@@ -50,29 +50,31 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
     return () => registerItem(node.id, null);
   }, [node.id, registerItem]);
 
-  const menuItems: DropdownMenuItem[] = [
-    {
-      label: 'Add child',
-      icon: <PlusIcon className="size-4" />,
-      onSelect: () => actions.onAddChild(node),
-    },
-    {
-      label: 'Edit',
-      icon: <PencilIcon className="size-4" />,
-      onSelect: () => actions.onEdit(node),
-    },
-    {
-      label: 'Move',
-      icon: <MoveIcon className="size-4" />,
-      onSelect: () => actions.onMove(node),
-    },
-    {
-      label: 'Delete',
-      icon: <TrashIcon className="size-4" />,
-      tone: 'danger',
-      onSelect: () => actions.onDelete(node),
-    },
-  ];
+  const menuItems: DropdownMenuItem[] = actions
+    ? [
+        {
+          label: 'Add child',
+          icon: <PlusIcon className="size-4" />,
+          onSelect: () => actions.onAddChild(node),
+        },
+        {
+          label: 'Edit',
+          icon: <PencilIcon className="size-4" />,
+          onSelect: () => actions.onEdit(node),
+        },
+        {
+          label: 'Move',
+          icon: <MoveIcon className="size-4" />,
+          onSelect: () => actions.onMove(node),
+        },
+        {
+          label: 'Delete',
+          icon: <TrashIcon className="size-4" />,
+          tone: 'danger',
+          onSelect: () => actions.onDelete(node),
+        },
+      ]
+    : [];
 
   return (
     <li
@@ -132,13 +134,15 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
           {LOCATION_TYPE_LABELS[node.type]}
         </span>
 
-        <span onClick={(event) => event.stopPropagation()}>
-          <DropdownMenu
-            triggerLabel={`Actions for ${node.name}`}
-            trigger={<MoreVerticalIcon className="size-5" />}
-            items={menuItems}
-          />
-        </span>
+        {actions ? (
+          <span onClick={(event) => event.stopPropagation()}>
+            <DropdownMenu
+              triggerLabel={`Actions for ${node.name}`}
+              trigger={<MoreVerticalIcon className="size-5" />}
+              items={menuItems}
+            />
+          </span>
+        ) : null}
       </div>
 
       {expanded ? (

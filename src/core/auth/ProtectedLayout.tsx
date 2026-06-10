@@ -6,6 +6,7 @@ import { useAuth } from '@features/Auth/hooks/useAuth';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', end: true },
+  { to: '/items', label: 'Items', end: false },
   { to: '/locations', label: 'Locations', end: false },
   { to: '/household', label: 'Household', end: false },
 ];
