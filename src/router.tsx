@@ -17,6 +17,7 @@ import { itemsRoutes } from '@features/Items/routes';
 import { movementsRoutes } from '@features/Movements/routes';
 import { searchRoutes } from '@features/Search/routes';
 import { kitchenRoutes } from '@features/Kitchen/routes';
+import { qrRoutes } from '@features/Qr/routes';
 
 /**
  * Aggregated route table.
@@ -49,6 +50,7 @@ const routes: RouteObject[] = [
               ...movementsRoutes,
               ...searchRoutes,
               ...kitchenRoutes,
+              ...qrRoutes,
             ],
           },
         ],

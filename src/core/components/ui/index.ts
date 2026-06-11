@@ -6,3 +6,4 @@ export { Alert } from './Alert';
 export { Select, type SelectProps } from './Select';
 export { Dialog } from './Dialog';
 export { DropdownMenu, type DropdownMenuItem } from './DropdownMenu';
+export { QrCode } from './QrCode';

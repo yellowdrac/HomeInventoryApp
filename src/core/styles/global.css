@@ -27,3 +27,28 @@ body {
     Arial,
     sans-serif;
 }
+
+/* Printing QR labels: hide the app chrome and show only the marked print area
+   (the printable labels sheet or a single label dialog). Used by the QR
+   feature's `window.print()` flows. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  [data-print-root],
+  [data-print-root] * {
+    visibility: visible;
+  }
+
+  [data-print-root] {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+}

@@ -6,6 +6,7 @@ export interface LocationTreeActions {
   onAddChild: (node: LocationTreeNode) => void;
   onEdit: (node: LocationTreeNode) => void;
   onMove: (node: LocationTreeNode) => void;
+  onShowQr: (node: LocationTreeNode) => void;
   onDelete: (node: LocationTreeNode) => void;
 }
 
