@@ -6,7 +6,7 @@ import {
   RequireHousehold,
 } from '@/core/auth/guards';
 import { ProtectedLayout } from '@/core/auth/ProtectedLayout';
-import { welcomeRoutes } from '@features/Welcome/routes';
+import { dashboardRoutes } from '@features/Dashboard/routes';
 import { authRoutes } from '@features/Auth/routes';
 import {
   householdRoutes,
@@ -43,7 +43,7 @@ const routes: RouteObject[] = [
           {
             element: createElement(RequireHousehold),
             children: [
-              ...welcomeRoutes,
+              ...dashboardRoutes,
               ...householdRoutes,
               ...locationsRoutes,
               ...itemsRoutes,
