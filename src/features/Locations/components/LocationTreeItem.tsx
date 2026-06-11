@@ -6,6 +6,7 @@ import {
   PlusIcon,
   PencilIcon,
   MoveIcon,
+  QrCodeIcon,
   TrashIcon,
 } from '@/core/components/icons';
 import { DropdownMenu, type DropdownMenuItem } from '@/core/components/ui';
@@ -68,6 +69,11 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
           label: 'Move',
           icon: <MoveIcon className="size-4" />,
           onSelect: () => actions.onMove(node),
+        },
+        {
+          label: 'Show QR',
+          icon: <QrCodeIcon className="size-4" />,
+          onSelect: () => actions.onShowQr(node),
         },
         {
           label: 'Delete',

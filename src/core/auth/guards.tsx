@@ -1,21 +1,44 @@
-import { Navigate, Outlet } from 'react-router';
+import { Navigate, Outlet, useLocation, useSearchParams } from 'react-router';
 import { useAuth } from '@features/Auth/hooks/useAuth';
+import { sanitizeReturnUrl } from '@/core/auth/returnUrl';
 
 /**
  * Allows only unauthenticated users (e.g. login/register). Authenticated users
- * are redirected into the app, where the household guard takes over if needed.
+ * are redirected to the preserved `redirect` target (set by `RequireAuth` when
+ * they were bounced to login), falling back to the app root. The household
+ * guard takes over from there if needed.
  */
 export function PublicOnlyRoute() {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to="/" replace /> : <Outlet />;
+  const [searchParams] = useSearchParams();
+
+  if (!isAuthenticated) {
+    return <Outlet />;
+  }
+
+  const target = sanitizeReturnUrl(searchParams.get('redirect'));
+  return <Navigate to={target ?? '/'} replace />;
 }
 
 /**
- * Requires an authenticated session. Unauthenticated users are sent to login.
+ * Requires an authenticated session. Unauthenticated users are sent to login
+ * with the location they were trying to reach preserved in a `redirect` query
+ * param, so they land back on it after signing in (e.g. a scanned QR deep link).
  */
 export function RequireAuth() {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  const location = useLocation();
+
+  if (isAuthenticated) {
+    return <Outlet />;
+  }
+
+  const target = location.pathname + location.search + location.hash;
+  const redirect =
+    target && target !== '/'
+      ? `?redirect=${encodeURIComponent(target)}`
+      : '';
+  return <Navigate to={`/login${redirect}`} replace />;
 }
 
 /**

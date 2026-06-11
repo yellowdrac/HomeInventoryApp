@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Alert, Button } from '@/core/components/ui';
-import { PlusIcon } from '@/core/components/icons';
+import { PlusIcon, PrinterIcon } from '@/core/components/icons';
+import { LocationQrDialog } from '@features/Qr/components/LocationQrDialog';
 import type { LocationTreeNode } from '@features/Locations/types';
 import { useLocationTree } from '@features/Locations/hooks/useLocationTree';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
@@ -18,6 +19,7 @@ type DialogState =
   | { kind: 'create'; parent: LocationTreeNode | null }
   | { kind: 'edit'; node: LocationTreeNode }
   | { kind: 'move'; node: LocationTreeNode }
+  | { kind: 'qr'; node: LocationTreeNode }
   | { kind: 'delete'; node: LocationTreeNode }
   | null;
 
@@ -64,10 +66,19 @@ export function LocationsView() {
           </p>
         </div>
         {data && data.length > 0 ? (
-          <Button onClick={() => setDialog({ kind: 'create', parent: null })}>
-            <PlusIcon className="size-4" />
-            Add location
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/labels"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
+            >
+              <PrinterIcon className="size-4" />
+              Print labels
+            </Link>
+            <Button onClick={() => setDialog({ kind: 'create', parent: null })}>
+              <PlusIcon className="size-4" />
+              Add location
+            </Button>
+          </div>
         ) : null}
       </header>
 
@@ -96,6 +107,7 @@ export function LocationsView() {
                   setDialog({ kind: 'create', parent: node }),
                 onEdit: (node) => setDialog({ kind: 'edit', node }),
                 onMove: (node) => setDialog({ kind: 'move', node }),
+                onShowQr: (node) => setDialog({ kind: 'qr', node }),
                 onDelete: (node) => setDialog({ kind: 'delete', node }),
               }}
             />
@@ -134,6 +146,15 @@ export function LocationsView() {
           onClose={closeDialog}
           node={dialog.node}
           nodes={data}
+        />
+      ) : null}
+
+      {dialog?.kind === 'qr' ? (
+        <LocationQrDialog
+          open
+          onClose={closeDialog}
+          locationId={dialog.node.id}
+          locationName={dialog.node.name}
         />
       ) : null}
 

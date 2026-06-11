@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/', label: 'Home', end: true },
   { to: '/items', label: 'Items', end: false },
   { to: '/locations', label: 'Locations', end: false },
+  { to: '/scan', label: 'Scan', end: false },
   { to: '/movements', label: 'History', end: false },
   { to: '/household', label: 'Household', end: false },
 ];

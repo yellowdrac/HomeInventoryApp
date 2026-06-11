@@ -2,9 +2,11 @@ import { apiClient } from '@/core/api/client';
 import type { StockLot } from '@features/Items/types';
 import type {
   CreateLocationRequest,
+  LocationBySlug,
   LocationDetail,
   LocationTreeNode,
   MoveLocationRequest,
+  PrintableLocation,
   UpdateLocationRequest,
 } from '@features/Locations/types';
 
@@ -60,6 +62,26 @@ export const locationsApi = {
   async getContents(id: string): Promise<StockLot[]> {
     const { data } = await apiClient.get<StockLot[]>(
       `/api/locations/${id}/contents`,
+    );
+    return data;
+  },
+
+  /** Resolves a QR slug to a location (and its contents) within the household. */
+  async getBySlug(slug: string): Promise<LocationBySlug> {
+    const { data } = await apiClient.get<LocationBySlug>(
+      `/api/locations/by-slug/${encodeURIComponent(slug)}`,
+    );
+    return data;
+  },
+
+  /**
+   * Lists the household's locations as printable QR labels. When `locationId`
+   * is given, the list is scoped to that location and all of its descendants.
+   */
+  async getPrintable(locationId?: string): Promise<PrintableLocation[]> {
+    const { data } = await apiClient.get<PrintableLocation[]>(
+      '/api/locations/printable',
+      locationId ? { params: { locationId } } : undefined,
     );
     return data;
   },

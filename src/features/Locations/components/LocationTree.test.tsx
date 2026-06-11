@@ -8,6 +8,7 @@ const noopActions = {
   onAddChild: () => {},
   onEdit: () => {},
   onMove: () => {},
+  onShowQr: () => {},
   onDelete: () => {},
 };
 

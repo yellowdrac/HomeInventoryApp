@@ -3,6 +3,8 @@
  * contract under `/api/locations`.
  */
 
+import type { StockLot } from '@features/Items/types';
+
 /**
  * Hierarchical level of a location. Mirrors the backend `LocationType` enum
  * (HomeInventory.Domain.Enums.LocationType). Values match the C# declaration
@@ -51,6 +53,15 @@ export interface LocationBreadcrumbItem {
   name: string;
 }
 
+/** Flat read model of a single location node. */
+export interface LocationNode {
+  id: string;
+  name: string;
+  type: LocationType;
+  parentId: string | null;
+  qrSlug: string;
+}
+
 /** Detailed read model for a single location. */
 export interface LocationDetail {
   id: string;
@@ -59,6 +70,29 @@ export interface LocationDetail {
   parentId: string | null;
   qrSlug: string;
   breadcrumb: LocationBreadcrumbItem[];
+  /** Direct children of the location (root → node order not applicable). */
+  children: LocationNode[];
+}
+
+/**
+ * Result of resolving a location by its QR slug: the location detail plus the
+ * stock lots stored at it. Mirrors the backend `LocationBySlugDto`.
+ */
+export interface LocationBySlug {
+  detail: LocationDetail;
+  contents: StockLot[];
+}
+
+/**
+ * Flat read model used to build a printable sheet of QR labels: a location with
+ * its name, its breadcrumb path (root → location, joined with ` / `) and the
+ * slug encoded into the QR. Mirrors the backend `PrintableLocationDto`.
+ */
+export interface PrintableLocation {
+  id: string;
+  name: string;
+  breadcrumb: string;
+  qrSlug: string;
 }
 
 export interface CreateLocationRequest {
