@@ -10,6 +10,9 @@ const MESSAGE_BY_CODE: Record<string, string> = {
     'An item with that name already exists in your household.',
   'Item.HasStock':
     'This item still has stock. Remove its stock lots before deleting it.',
+  'Item.PhotoContentTypeNotAllowed':
+    'That image type is not supported. Use JPEG, PNG or WebP.',
+  'Item.PhotoTooLarge': 'That image is too large. The maximum size is 5 MB.',
   'Stock.LotNotFound':
     'That stock lot no longer exists. Refresh and try again.',
   'Stock.ItemNotFound': 'The referenced item no longer exists.',

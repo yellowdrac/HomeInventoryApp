@@ -15,6 +15,7 @@ import { StockLotList } from '@features/Items/components/StockLotList';
 import { EditItemDialog } from '@features/Items/components/EditItemDialog';
 import { DeleteItemDialog } from '@features/Items/components/DeleteItemDialog';
 import { AddStockDialog } from '@features/Items/components/AddStockDialog';
+import { ItemPhotoManager } from '@features/Items/components/ItemPhotoManager';
 import { EditStockLotDialog } from '@features/Items/components/EditStockLotDialog';
 import { DeleteStockLotDialog } from '@features/Items/components/DeleteStockLotDialog';
 import { MoveStockDialog } from '@features/Items/components/MoveStockDialog';
@@ -111,6 +112,13 @@ export function ItemDetailView() {
               </div>
             </div>
           </header>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900">Photo</h2>
+            <div className="mt-4">
+              <ItemPhotoManager item={item} />
+            </div>
+          </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3">
