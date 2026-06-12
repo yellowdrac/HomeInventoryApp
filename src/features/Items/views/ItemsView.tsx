@@ -116,12 +116,20 @@ function ItemRow({ item }: { item: Item }) {
       to={`/items/${item.id}`}
       className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition-colors hover:border-emerald-300 hover:bg-emerald-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 sm:p-4"
     >
-      <span
-        className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500"
-        aria-hidden="true"
-      >
-        <PackageIcon className="size-5" />
-      </span>
+      {item.photoUrl ? (
+        <img
+          src={item.photoUrl}
+          alt=""
+          className="size-10 shrink-0 rounded-lg object-cover"
+        />
+      ) : (
+        <span
+          className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500"
+          aria-hidden="true"
+        >
+          <PackageIcon className="size-5" />
+        </span>
+      )}
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">

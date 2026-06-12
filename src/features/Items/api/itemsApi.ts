@@ -1,3 +1,4 @@
+import type { AxiosRequestHeaders } from 'axios';
 import { apiClient } from '@/core/api/client';
 import type {
   AddStockRequest,
@@ -7,6 +8,7 @@ import type {
   GetItemsParams,
   Item,
   ItemDetail,
+  ItemPhoto,
   MoveStockRequest,
   PagedResult,
   StockLot,
@@ -43,6 +45,27 @@ export const itemsApi = {
 
   async remove(id: string): Promise<void> {
     await apiClient.delete(`/api/items/${id}`);
+  },
+
+  async uploadPhoto(itemId: string, file: File): Promise<ItemPhoto> {
+    const formData = new FormData();
+    // Field name must match the backend `IFormFile file` parameter.
+    formData.append('file', file);
+    const { data } = await apiClient.post<ItemPhoto>(
+      `/api/items/${itemId}/photo`,
+      formData,
+      {
+        // Clear the client's default JSON content type so axios lets the browser
+        // set `multipart/form-data` with the correct boundary. Cast because
+        // `exactOptionalPropertyTypes` rejects an explicit `undefined` value.
+        headers: { 'Content-Type': undefined } as unknown as AxiosRequestHeaders,
+      },
+    );
+    return data;
+  },
+
+  async deletePhoto(itemId: string): Promise<void> {
+    await apiClient.delete(`/api/items/${itemId}/photo`);
   },
 
   async addStock(itemId: string, payload: AddStockRequest): Promise<StockLot> {

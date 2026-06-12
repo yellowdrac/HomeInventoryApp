@@ -11,6 +11,7 @@ import {
 } from '@features/Items/schemas';
 import { TrackingType, type Item } from '@features/Items/types';
 import { ItemFormFields } from '@features/Items/components/ItemFormFields';
+import { ItemPhotoManager } from '@features/Items/components/ItemPhotoManager';
 
 interface EditItemDialogProps {
   open: boolean;
@@ -75,6 +76,11 @@ export function EditItemDialog({ open, onClose, item }: EditItemDialogProps) {
           idPrefix="edit-item"
           showUnit={isQuantity}
         />
+
+        <div className="space-y-2 border-t border-slate-200 pt-4">
+          <p className="text-sm font-medium text-slate-700">Photo</p>
+          <ItemPhotoManager item={item} />
+        </div>
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>

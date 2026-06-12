@@ -60,6 +60,14 @@ export interface ItemDetail extends Item {
   lots: StockLot[];
 }
 
+/**
+ * Result of uploading an item photo: a fresh, short-lived presigned GET URL for
+ * the stored object (mirrors the backend `ItemPhotoDto`).
+ */
+export interface ItemPhoto {
+  photoUrl: string;
+}
+
 /** A single page of results plus pagination metadata (mirrors `PagedResult<T>`). */
 export interface PagedResult<T> {
   items: T[];
