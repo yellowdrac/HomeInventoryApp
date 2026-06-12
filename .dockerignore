@@ -1,0 +1,25 @@
+# Dependencies and build outputs (reinstalled / rebuilt inside the image)
+node_modules/
+dist/
+.yarn/cache
+.yarn/install-state.gz
+
+# IDE / tooling
+.vs/
+.vscode/
+.idea/
+*.local
+
+# Git / CI
+.git/
+.gitignore
+.github/
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Docs and local env
+*.md
+.env
+.env.*
