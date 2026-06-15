@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useAuthStore } from '@features/Auth/store/authStore';
 import { useRefresh } from '@features/Auth/hooks/useRefresh';
+import { useTokenRefresh } from '@features/Auth/hooks/useTokenRefresh';
 
 interface AuthBootstrapProps {
   children: ReactNode;
@@ -13,6 +14,7 @@ interface AuthBootstrapProps {
  */
 export function AuthBootstrap({ children }: AuthBootstrapProps) {
   const refresh = useRefresh();
+  useTokenRefresh();
   const hasRefreshToken = useAuthStore((state) => state.refreshToken !== null);
   const accessToken = useAuthStore((state) => state.accessToken);
 
