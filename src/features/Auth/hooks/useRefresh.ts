@@ -15,7 +15,6 @@ export function useRefresh() {
     mutationFn: () => {
       const refreshToken = useAuthStore.getState().refreshToken;
       if (!refreshToken) {
-        console.log("From useRefresh")
         return Promise.reject(new Error('No refresh token available'));
       }
       return authApi.refresh({ refreshToken });
