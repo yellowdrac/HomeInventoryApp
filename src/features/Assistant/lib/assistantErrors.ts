@@ -5,10 +5,8 @@ import { resolveApiErrorMessage } from '@/core/api/errors';
  * usage-limit case is the one users hit most, so it gets a clear message.
  */
 const CODE_MESSAGES: Record<string, string> = {
-  assistant_rate_limited:
-    'The assistant is busy right now. Please wait a moment and try again.',
-  assistant_unavailable:
-    'The assistant is temporarily unavailable. Please try again later.',
+  'Assistant.RateLimited': 'Rate limit API key exceeded. Please wait a moment and try again.',
+  'Assistant.Unavailable': 'The assistant is temporarily unavailable. Please try again later.',
 };
 
 /** Maps an assistant error into a user-facing message. */
