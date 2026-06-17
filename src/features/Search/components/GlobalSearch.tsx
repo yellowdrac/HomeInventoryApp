@@ -13,16 +13,28 @@ import type { SearchResultItem } from '@features/Search/types';
 /** Max quick matches shown in the palette before "search everywhere". */
 const QUICK_LIMIT = 6;
 
+// Prevents the Ctrl+K shortcut from being registered by more than one
+// mounted GlobalSearch instance (sidebar + mobile top bar are both mounted).
+let shortcutOwned = false;
+
+interface GlobalSearchProps {
+  /** Render as a compact icon-only button (for the desktop sidebar). */
+  compact?: boolean;
+}
+
 /**
- * Global search access in the app header: a button that opens an accessible
- * command palette (combobox + listbox) for quick "where is it?" lookups, with
- * keyboard navigation and an option to open the full results page. Also opens
- * on Ctrl/Cmd+K.
+ * Global search access: a button that opens an accessible command palette for
+ * quick "where is it?" lookups with keyboard navigation. Also opens on
+ * Ctrl/Cmd+K. Pass `compact` to render as an icon-only button for tight spaces.
  */
-export function GlobalSearch() {
+export function GlobalSearch({ compact = false }: GlobalSearchProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    // Only the first mounted instance registers the keyboard shortcut.
+    if (shortcutOwned) return;
+    shortcutOwned = true;
+
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
@@ -30,7 +42,10 @@ export function GlobalSearch() {
       }
     }
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      shortcutOwned = false;
+    };
   }, []);
 
   return (
@@ -38,13 +53,22 @@ export function GlobalSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-500 transition-colors hover:border-slate-400 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+        aria-label="Search inventory"
+        className={
+          compact
+            ? 'flex size-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600'
+            : 'flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-500 transition-colors hover:border-slate-400 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600'
+        }
       >
-        <SearchIcon className="size-4" />
-        <span className="hidden sm:inline">Search</span>
-        <kbd className="hidden rounded border border-slate-200 bg-slate-50 px-1.5 text-xs font-medium text-slate-400 sm:inline">
-          Ctrl K
-        </kbd>
+        <SearchIcon className="size-4 shrink-0" />
+        {!compact && (
+          <>
+            <span className="hidden sm:inline">Search</span>
+            <kbd className="hidden rounded border border-slate-200 bg-slate-50 px-1.5 text-xs font-medium text-slate-400 sm:inline">
+              Ctrl K
+            </kbd>
+          </>
+        )}
       </button>
 
       {open ? <SearchPalette onClose={() => setOpen(false)} /> : null}
