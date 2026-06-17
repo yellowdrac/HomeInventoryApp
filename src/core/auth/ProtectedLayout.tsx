@@ -1,76 +1,45 @@
-import { NavLink, Outlet } from 'react-router';
-import { FullLayout } from '@/core/layouts/FullLayout';
-import { Button } from '@/core/components/ui';
-import { cn } from '@/core/lib/cn';
+import { Outlet } from 'react-router';
 import { useAuth } from '@features/Auth/hooks/useAuth';
-import { GlobalSearch } from '@features/Search/components/GlobalSearch';
-import { KitchenNavLink } from '@features/Kitchen/components/KitchenNavLink';
-
-const NAV_ITEMS = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/items', label: 'Items', end: false },
-  { to: '/locations', label: 'Locations', end: false },
-  { to: '/scan', label: 'Scan', end: false },
-  { to: '/movements', label: 'History', end: false },
-  { to: '/assistant', label: 'Assistant', end: false },
-  { to: '/household', label: 'Household', end: false },
-];
+import { BottomTabBar } from '@/core/components/nav/BottomTabBar';
+import { IconSidebar } from '@/core/components/nav/IconSidebar';
+import { MobileTopBar } from '@/core/components/nav/MobileTopBar';
 
 /**
- * Layout for authenticated areas: the app shell plus a header showing the
- * primary navigation, the signed-in user and a logout action. Renders nested
- * routes via `<Outlet />`.
+ * Authenticated app shell — Proposal C layout:
+ *   • Desktop (≥ sm): 56 px icon-only sidebar on the left, full-width content.
+ *   • Mobile  (< sm): sticky top bar + content + fixed bottom tab bar.
+ *
+ * Nav is only rendered once a household is set up. The household-setup page
+ * gets a bare header so users aren't confused by a partially-working nav.
  */
 export function ProtectedLayout() {
-  const { user, hasHousehold, logout } = useAuth();
+  const { hasHousehold } = useAuth();
 
   return (
-    <FullLayout
-      headerEnd={
-        <>
-          {hasHousehold ? <GlobalSearch /> : null}
-          {hasHousehold ? (
-            <nav aria-label="Primary" className="hidden sm:block">
-              <ul className="flex items-center gap-1">
-                {NAV_ITEMS.map((item) => (
-                  <li key={item.to}>
-                    <NavLink
-                      to={item.to}
-                      end={item.end}
-                      className={({ isActive }) =>
-                        cn(
-                          'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                          isActive
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
-                        )
-                      }
-                    >
-                      {item.label}
-                    </NavLink>
-                  </li>
-                ))}
-                <li>
-                  <KitchenNavLink />
-                </li>
-              </ul>
-            </nav>
-          ) : null}
-          {user ? (
-            <span
-              className="hidden text-sm text-slate-600 sm:inline"
-              title={user.email}
-            >
-              {user.email}
+    <div className="flex min-h-screen bg-slate-50 text-slate-900">
+      {/* Desktop sidebar — hidden on mobile */}
+      {hasHousehold ? <IconSidebar /> : null}
+
+      {/* Right column: mobile top bar + page content */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {hasHousehold ? (
+          <MobileTopBar />
+        ) : (
+          // Minimal header shown during household setup (no nav items yet).
+          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center border-b border-slate-200 bg-white/90 px-4 backdrop-blur sm:px-6">
+            <span className="text-[15px] font-semibold tracking-tight text-slate-900">
+              HomeInventory
             </span>
-          ) : null}
-          <Button variant="secondary" onClick={logout}>
-            Log out
-          </Button>
-        </>
-      }
-    >
-      <Outlet />
-    </FullLayout>
+          </header>
+        )}
+
+        <main className="flex-1 px-4 pt-6 pb-24 sm:px-6 sm:py-8">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Mobile bottom tab bar — fixed, hidden on desktop */}
+      {hasHousehold ? <BottomTabBar /> : null}
+    </div>
   );
 }
