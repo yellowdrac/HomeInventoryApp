@@ -69,7 +69,7 @@ describe('ActionCard', () => {
     const link = await screen.findByRole('link', { name: /AA Batteries/ });
     expect(link).toHaveAttribute('href', '/items/item-abc');
     expect(mock.history.post).toHaveLength(1);
-    expect(JSON.parse(mock.history.post[0].data as string)).toMatchObject({
+    expect(JSON.parse(mock.history.post[0]!.data as string)).toMatchObject({
       actions: [
         expect.objectContaining({ summary: 'Create item "AA Batteries"' }),
       ],

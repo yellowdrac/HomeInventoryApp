@@ -153,7 +153,7 @@ export function ActionCard({ actions }: ActionCardProps) {
         <div className="flex gap-2">
           <Button
             onClick={handleConfirm}
-            isLoading={state === 'loading'}
+            isLoading={execute.isPending}
             aria-label="Confirm proposed action"
             className="px-3 py-1.5 text-xs"
           >
