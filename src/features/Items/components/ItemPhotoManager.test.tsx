@@ -17,6 +17,7 @@ function makeItem(overrides: Partial<Item> = {}): Item {
     unit: null,
     photoUrl: null,
     totalQuantity: 0,
+    minimumQuantity: null,
     ...overrides,
   };
 }

@@ -16,6 +16,7 @@ const stockedItem: Item = {
   unit: 'L',
   photoUrl: null,
   totalQuantity: 3,
+  minimumQuantity: null,
 };
 
 let mock: MockAdapter;

@@ -1,4 +1,5 @@
 import { useItems } from '@features/Items/hooks/useItems';
+import { useLowStockCount } from '@features/Items/hooks/useLowStockCount';
 import { useLocationTree } from '@features/Locations/hooks/useLocationTree';
 import { useKitchenOverview } from '@features/Kitchen/hooks/useKitchenOverview';
 import { useMovements } from '@features/Movements/hooks/useMovements';
@@ -24,6 +25,7 @@ export interface DashboardSummary {
   locationCount: number;
   expiringSoonCount: number;
   expiredCount: number;
+  lowStockCount: number;
 }
 
 /**
@@ -41,6 +43,7 @@ export function useDashboard() {
     page: 1,
     pageSize: RECENT_MOVEMENTS_COUNT,
   });
+  const lowStockQuery = useLowStockCount();
 
   const summary: DashboardSummary = {
     itemCount: itemsQuery.data?.totalCount ?? 0,
@@ -49,6 +52,7 @@ export function useDashboard() {
       : 0,
     expiringSoonCount: kitchenQuery.data?.expiringSoonCount ?? 0,
     expiredCount: kitchenQuery.data?.expiredCount ?? 0,
+    lowStockCount: lowStockQuery.count,
   };
 
   const recentMovements: Movement[] = movementsQuery.data?.items ?? [];
@@ -60,7 +64,8 @@ export function useDashboard() {
     isSummaryLoading:
       itemsQuery.isPending ||
       locationsQuery.isPending ||
-      kitchenQuery.isPending,
+      kitchenQuery.isPending ||
+      lowStockQuery.isPending,
     isMovementsLoading: movementsQuery.isPending,
     isMovementsError: movementsQuery.isError,
     movementsError: movementsQuery.error,

@@ -53,6 +53,8 @@ export interface Item {
   unit: string | null;
   photoUrl: string | null;
   totalQuantity: number;
+  /** Alert threshold: dashboard flags this item when total quantity drops below this. Null means no threshold. */
+  minimumQuantity: number | null;
 }
 
 /** Detailed read model of an item: its fields plus every stock lot it owns. */
@@ -83,6 +85,8 @@ export interface GetItemsParams {
   category?: string;
   page?: number;
   pageSize?: number;
+  /** When true, only return items whose total quantity is below their minimumQuantity threshold. */
+  belowMinimum?: boolean;
 }
 
 export interface CreateItemRequest {
@@ -92,6 +96,7 @@ export interface CreateItemRequest {
   trackingType: TrackingType;
   unit: string | null;
   photoUrl: string | null;
+  minimumQuantity: number | null;
 }
 
 export type UpdateItemRequest = CreateItemRequest;

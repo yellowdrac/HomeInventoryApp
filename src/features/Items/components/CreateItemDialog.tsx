@@ -11,6 +11,7 @@ import { getItemErrorMessage } from '@features/Items/lib/itemErrors';
 import {
   itemFormSchema,
   parseTrackingType,
+  toNullableMinimumQuantity,
   toNullableText,
   type ItemFormValues,
 } from '@features/Items/schemas';
@@ -54,6 +55,7 @@ export function CreateItemDialog({ open, onClose }: CreateItemDialogProps) {
       barcode: '',
       trackingType: String(TrackingType.Quantity),
       unit: '',
+      minimumQuantity: '',
     },
   });
 
@@ -96,6 +98,7 @@ export function CreateItemDialog({ open, onClose }: CreateItemDialogProps) {
         barcode: toNullableText(values.barcode),
         trackingType: parseTrackingType(values.trackingType),
         unit: isQuantity ? toNullableText(values.unit) : null,
+        minimumQuantity: isQuantity ? toNullableMinimumQuantity(values.minimumQuantity) : null,
         photoUrl: null,
       },
       {

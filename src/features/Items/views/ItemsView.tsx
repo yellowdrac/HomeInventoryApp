@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Alert, Button, Input, Label } from '@/core/components/ui';
 import {
   ChevronRightIcon,
@@ -25,14 +25,17 @@ export function ItemsView() {
   const [search, setSearch] = useState('');
   const [isCreateOpen, setCreateOpen] = useState(false);
   const searchId = useId();
+  const [searchParams] = useSearchParams();
+  const showLowStockOnly = searchParams.get('lowStock') === 'true';
 
   const nameFilter = useDebouncedValue(search.trim(), 300);
-  const { data, isPending, isError, error, isPlaceholderData } = useItems(
-    nameFilter ? { nameFilter } : {},
-  );
+  const { data, isPending, isError, error, isPlaceholderData } = useItems({
+    ...(nameFilter ? { nameFilter } : {}),
+    ...(showLowStockOnly ? { belowMinimum: true } : {}),
+  });
 
   const items = data?.items ?? [];
-  const hasFilter = nameFilter.length > 0;
+  const hasFilter = nameFilter.length > 0 || showLowStockOnly;
 
   return (
     <section className="space-y-6">
@@ -50,6 +53,15 @@ export function ItemsView() {
           Add item
         </Button>
       </header>
+
+      {showLowStockOnly ? (
+        <div className="flex items-center justify-between rounded-xl bg-violet-50 px-4 py-2.5 text-sm text-violet-700">
+          <span>Showing items below their minimum stock level</span>
+          <Link to="/items" className="font-medium underline underline-offset-2">
+            Clear filter
+          </Link>
+        </div>
+      ) : null}
 
       <div className="relative">
         <Label htmlFor={searchId} className="sr-only">
@@ -76,7 +88,14 @@ export function ItemsView() {
       {isPending ? <ItemsSkeleton /> : null}
 
       {!isPending && !isError && items.length === 0 ? (
-        hasFilter ? (
+        showLowStockOnly ? (
+          <p
+            className="rounded-2xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-600"
+            role="status"
+          >
+            No items are currently below their minimum stock level.
+          </p>
+        ) : hasFilter ? (
           <p
             className="rounded-2xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-600"
             role="status"

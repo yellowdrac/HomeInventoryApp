@@ -15,6 +15,7 @@ const uniqueItem: Item = {
   unit: null,
   photoUrl: null,
   totalQuantity: 0,
+  minimumQuantity: null,
 };
 
 let mock: MockAdapter;

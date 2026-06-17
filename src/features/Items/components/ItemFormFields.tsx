@@ -107,6 +107,27 @@ export function ItemFormFields({
           )}
         </FormField>
       ) : null}
+
+      {showUnit ? (
+        <FormField
+          id={`${idPrefix}-minimumQuantity`}
+          label="Low stock alert"
+          hint="Optional — alert when stock drops below this"
+          error={errors.minimumQuantity?.message}
+        >
+          {(aria) => (
+            <Input
+              type="number"
+              min={0}
+              step={1}
+              placeholder="e.g. 2"
+              autoComplete="off"
+              {...aria}
+              {...register('minimumQuantity')}
+            />
+          )}
+        </FormField>
+      ) : null}
     </div>
   );
 }
