@@ -40,4 +40,6 @@ export const env = {
   apiUrl: readApiBaseUrl(),
   /** Public base URL used to build the QR deep links (`/l/{slug}`). */
   publicAppUrl: readPublicAppUrl(),
+  /** VAPID public key for Web Push subscriptions. Empty string = push disabled. */
+  vapidPublicKey: import.meta.env.VITE_VAPID_PUBLIC_KEY?.trim() ?? '',
 } as const;

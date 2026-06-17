@@ -1,4 +1,6 @@
+import { Link } from 'react-router';
 import { Button, Alert } from '@/core/components/ui';
+import { BellIcon } from '@/core/components/icons';
 import { getHouseholdErrorMessage } from '@features/Household/lib/householdErrors';
 import { useMyHousehold } from '@features/Household/hooks/useMyHousehold';
 import { useRegenerateCode } from '@features/Household/hooks/useRegenerateCode';
@@ -35,6 +37,21 @@ export function HouseholdView() {
           {data.isOwner ? 'You own this household.' : 'You are a member.'}
         </p>
       </div>
+
+      <Link
+        to="/notifications"
+        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-emerald-300 hover:bg-emerald-50/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+          <BellIcon className="size-5" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="font-medium text-slate-900">Notification settings</p>
+          <p className="text-sm text-slate-500">
+            Email and push alerts for expiring items
+          </p>
+        </div>
+      </Link>
 
       <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="space-y-1">

@@ -19,6 +19,7 @@ import { searchRoutes } from '@features/Search/routes';
 import { kitchenRoutes } from '@features/Kitchen/routes';
 import { qrRoutes } from '@features/Qr/routes';
 import { assistantRoutes } from '@features/Assistant/routes';
+import { notificationsRoutes } from '@features/Notifications/routes';
 
 /**
  * Aggregated route table.
@@ -53,6 +54,7 @@ const routes: RouteObject[] = [
               ...kitchenRoutes,
               ...qrRoutes,
               ...assistantRoutes,
+              ...notificationsRoutes,
             ],
           },
         ],
