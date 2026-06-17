@@ -1,11 +1,14 @@
 import { cn } from '@/core/lib/cn';
 import { SparklesIcon, UserIcon } from '@/core/components/icons';
+import { ActionCard } from '@features/Assistant/components/ActionCard';
+import { ClarificationButtons } from '@features/Assistant/components/ClarificationButtons';
 import { Markdown } from '@features/Assistant/components/Markdown';
 import { ReferenceLinks } from '@features/Assistant/components/ReferenceLinks';
 import type { ChatMessage } from '@features/Assistant/types';
 
 interface ChatMessageBubbleProps {
   message: ChatMessage;
+  onClarificationSelect?: (option: string) => void;
 }
 
 /**
@@ -13,7 +16,7 @@ interface ChatMessageBubbleProps {
  * the right; assistant turns render safe markdown in a white card on the left,
  * followed by any cited items/locations as links.
  */
-export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
+export function ChatMessageBubble({ message, onClarificationSelect }: ChatMessageBubbleProps) {
   const isUser = message.role === 'user';
 
   return (
@@ -57,6 +60,15 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
             <Markdown content={message.content} />
             {message.references && message.references.length > 0 ? (
               <ReferenceLinks references={message.references} />
+            ) : null}
+            {message.proposedActions && message.proposedActions.length > 0 ? (
+              <ActionCard actions={message.proposedActions} />
+            ) : null}
+            {message.clarificationQuestion ? (
+              <ClarificationButtons
+                question={message.clarificationQuestion}
+                onSelect={onClarificationSelect ?? (() => {})}
+              />
             ) : null}
           </>
         )}
