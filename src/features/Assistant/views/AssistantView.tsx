@@ -17,8 +17,8 @@ const INPUT_ID = 'assistant-composer';
 /**
  * Assistant chat: a ChatGPT-style conversation over the household inventory.
  * History is kept on the client and replayed with each request (the backend is
- * stateless). The assistant is read-only — it answers questions and links to
- * the cited items/locations, but exposes no inventory-mutating actions.
+ * stateless). The assistant can propose write actions (create items/locations,
+ * add/move stock) which the user must confirm before anything is mutated.
  */
 export function AssistantView() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -39,8 +39,8 @@ export function AssistantView() {
     }
   }, [messages, chat.isPending]);
 
-  function send() {
-    const trimmed = input.trim();
+  function send(messageOverride?: string) {
+    const trimmed = (messageOverride ?? input).trim();
     if (!trimmed || chat.isPending) {
       return;
     }
@@ -50,7 +50,7 @@ export function AssistantView() {
       .map(({ role, content }) => ({ role, content }));
 
     setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
-    setInput('');
+    if (!messageOverride) setInput('');
     chat.reset();
 
     chat.mutate(
@@ -62,8 +62,12 @@ export function AssistantView() {
             {
               role: 'assistant',
               content: response.answer,
-              ...(response.references && response.references.length > 0
-                ? { references: response.references }
+              ...(response.references?.length ? { references: response.references } : {}),
+              ...(response.proposedActions?.length
+                ? { proposedActions: response.proposedActions }
+                : {}),
+              ...(response.clarificationQuestion
+                ? { clarificationQuestion: response.clarificationQuestion }
                 : {}),
             },
           ]);
@@ -100,7 +104,7 @@ export function AssistantView() {
           Assistant
         </h1>
         <p className="text-sm text-slate-600">
-          Ask about where things are and how much stock you have.
+          Ask about your inventory or tell the assistant to add stock, move items, and more.
         </p>
       </header>
 
@@ -114,7 +118,11 @@ export function AssistantView() {
           <AssistantEmptyState onPick={pickExample} />
         ) : (
           messages.map((message, index) => (
-            <ChatMessageBubble key={index} message={message} />
+            <ChatMessageBubble
+              key={index}
+              message={message}
+              onClarificationSelect={send}
+            />
           ))
         )}
 
