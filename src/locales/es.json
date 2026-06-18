@@ -324,6 +324,7 @@
     "title": "Buscar",
     "description": "Encuentra dónde está almacenado cualquier artículo en tu hogar.",
     "label": "Buscar",
+    "inputLabel": "Buscar en el inventario",
     "placeholder": "Buscar un artículo por nombre o código de barras",
     "minChars": "Escribe al menos {{count}} caracteres para buscar.",
     "noResults": "Sin resultados para \"{{query}}\". Prueba con una ortografía diferente.",

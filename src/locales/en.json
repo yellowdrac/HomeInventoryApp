@@ -324,6 +324,7 @@
     "title": "Search",
     "description": "Find where any item is stored across your home.",
     "label": "Search",
+    "inputLabel": "Search inventory",
     "placeholder": "Search for an item by name or barcode",
     "minChars": "Type at least {{count}} characters to search.",
     "noResults": "No results for \"{{query}}\". Try a different spelling.",

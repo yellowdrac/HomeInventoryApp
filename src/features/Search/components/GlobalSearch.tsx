@@ -190,7 +190,7 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
               options.length > 0 ? optionId(activeIndex) : undefined
             }
             aria-autocomplete="list"
-            aria-label={t('search.title')}
+            aria-label={t('search.inputLabel')}
             autoComplete="off"
             value={query}
             onChange={(event) => setQuery(event.target.value)}

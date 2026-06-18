@@ -67,7 +67,7 @@ export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
             onClick={confirmUpload}
             isLoading={upload.isPending}
           >
-            {upload.isPending ? t('photo.uploading') : t('photo.uploadPhoto')}
+            {upload.isPending ? t('photo.uploading') : t('photo.uploadPhotoBtn')}
           </Button>
         </div>
       ) : item.photoUrl ? (
