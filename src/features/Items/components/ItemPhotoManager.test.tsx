@@ -14,9 +14,11 @@ function makeItem(overrides: Partial<Item> = {}): Item {
     category: null,
     barcode: null,
     trackingType: TrackingType.Quantity,
+    unitId: null,
     unit: null,
     photoUrl: null,
     totalQuantity: 0,
+    minimumQuantity: null,
     ...overrides,
   };
 }

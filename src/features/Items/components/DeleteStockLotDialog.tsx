@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { useDeleteStockLot } from '@features/Items/hooks/useDeleteStockLot';
 import { getItemErrorMessage } from '@features/Items/lib/itemErrors';
@@ -18,6 +19,7 @@ export function DeleteStockLotDialog({
   item,
   lot,
 }: DeleteStockLotDialogProps) {
+  const { t } = useTranslation();
   const deleteStockLot = useDeleteStockLot();
 
   function onConfirm() {
@@ -32,14 +34,12 @@ export function DeleteStockLotDialog({
       open={open}
       onClose={onClose}
       role="alertdialog"
-      title="Remove stock?"
-      description={`${formatQuantity(lot.quantity, item.unit)} in ${
-        lot.locationName
-      } will be removed. This action cannot be undone.`}
+      title={t('stock.removeStockTitle')}
+      description={t('stock.removeStockDescription', { quantity: formatQuantity(lot.quantity, item.unit), location: lot.locationName })}
       footer={
         <>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
@@ -48,7 +48,7 @@ export function DeleteStockLotDialog({
             onClick={onConfirm}
             isLoading={deleteStockLot.isPending}
           >
-            {deleteStockLot.isPending ? 'Removing...' : 'Remove'}
+            {deleteStockLot.isPending ? t('stock.removing') : t('stock.remove')}
           </Button>
         </>
       }

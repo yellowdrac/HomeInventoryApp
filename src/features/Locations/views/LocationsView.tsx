@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button } from '@/core/components/ui';
 import { PlusIcon, PrinterIcon } from '@/core/components/icons';
 import { LocationQrDialog } from '@features/Qr/components/LocationQrDialog';
@@ -29,6 +30,7 @@ type DialogState =
  * protected layout.
  */
 export function LocationsView() {
+  const { t } = useTranslation();
   const { data, isPending, isError, error } = useLocationTree();
   const [searchParams] = useSearchParams();
   const locationParam = searchParams.get('location');
@@ -59,10 +61,10 @@ export function LocationsView() {
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Locations
+            {t('locations.title')}
           </h1>
           <p className="text-sm text-slate-600">
-            Organize where things live in your home.
+            {t('locations.description')}
           </p>
         </div>
         {data && data.length > 0 ? (
@@ -72,11 +74,11 @@ export function LocationsView() {
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
             >
               <PrinterIcon className="size-4" />
-              Print labels
+              {t('qr.printLabels')}
             </Link>
             <Button onClick={() => setDialog({ kind: 'create', parent: null })}>
               <PlusIcon className="size-4" />
-              Add location
+              {t('locations.addLocation')}
             </Button>
           </div>
         ) : null}
@@ -121,7 +123,7 @@ export function LocationsView() {
               />
             ) : (
               <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-500">
-                Select a location to see what is stored there.
+                {t('locationContents.selectLocation')}
               </p>
             )}
           </div>
@@ -167,12 +169,13 @@ export function LocationsView() {
 
 /** Accessible loading placeholder for the tree. */
 function LocationsSkeleton() {
+  const { t } = useTranslation();
   return (
     <div
       className="space-y-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
       role="status"
       aria-busy="true"
-      aria-label="Loading locations"
+      aria-label={t('locations.loadingLocations')}
     >
       {[0, 1, 2, 3].map((row) => (
         <div

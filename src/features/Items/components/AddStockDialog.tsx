@@ -1,5 +1,6 @@
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog, FormField, Input } from '@/core/components/ui';
 import { LocationPicker } from '@features/Locations/components/LocationPicker';
 import { useAddStock } from '@features/Items/hooks/useAddStock';
@@ -23,6 +24,7 @@ interface AddStockDialogProps {
  * a quantity of 1.
  */
 export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
+  const { t } = useTranslation();
   const addStock = useAddStock();
   const isUnique = item.trackingType === TrackingType.Unique;
 
@@ -60,8 +62,8 @@ export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
     <Dialog
       open={open}
       onClose={onClose}
-      title={`Add stock to "${item.name}"`}
-      description="Choose where the stock is stored and how much."
+      title={t('stock.addStockTitle', { name: item.name })}
+      description={t('stock.addStockDescription')}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {addStock.isError ? (
@@ -70,7 +72,7 @@ export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
 
         <FormField
           id="add-stock-location"
-          label="Location"
+          label={t('stock.location')}
           error={errors.locationId?.message}
         >
           {(aria) => (
@@ -91,12 +93,12 @@ export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
 
         <FormField
           id="add-stock-quantity"
-          label="Quantity"
+          label={t('stock.quantity')}
           hint={
             isUnique
-              ? 'Unique items always have a quantity of 1.'
+              ? t('stock.uniqueQuantityHint')
               : item.unit
-                ? `Measured in ${item.unit}.`
+                ? t('stock.measuredIn', { unit: item.unit })
                 : undefined
           }
           error={isUnique ? undefined : errors.quantity?.message}
@@ -117,8 +119,8 @@ export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             id="add-stock-acquired"
-            label="Acquired date"
-            hint="Optional"
+            label={t('stock.acquiredDate')}
+            hint={t('common.optional')}
             error={errors.acquiredDate?.message}
           >
             {(aria) => (
@@ -128,8 +130,8 @@ export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
 
           <FormField
             id="add-stock-expiration"
-            label="Expiration date"
-            hint="Optional"
+            label={t('stock.expirationDate')}
+            hint={t('common.optional')}
             error={errors.expirationDate?.message}
           >
             {(aria) => (
@@ -140,10 +142,10 @@ export function AddStockDialog({ open, onClose, item }: AddStockDialogProps) {
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={addStock.isPending}>
-            {addStock.isPending ? 'Adding...' : 'Add stock'}
+            {addStock.isPending ? t('stock.adding') : t('stock.addStock')}
           </Button>
         </div>
       </form>

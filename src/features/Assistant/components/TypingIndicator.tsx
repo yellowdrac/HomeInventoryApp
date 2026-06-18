@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SparklesIcon } from '@/core/components/icons';
 
 /**
@@ -6,6 +7,7 @@ import { SparklesIcon } from '@/core/components/icons';
  * assistive tech (the chat log announces it politely).
  */
 export function TypingIndicator() {
+  const { t } = useTranslation();
   return (
     <div className="flex items-start gap-2.5" role="status">
       <span
@@ -20,7 +22,7 @@ export function TypingIndicator() {
           <Dot delay="150ms" />
           <Dot delay="300ms" />
         </span>
-        <span className="text-sm text-slate-500">Assistant is typing…</span>
+        <span className="text-sm text-slate-500">{t('assistant.typing')}</span>
       </div>
     </div>
   );

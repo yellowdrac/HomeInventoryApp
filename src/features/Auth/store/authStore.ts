@@ -35,17 +35,29 @@ interface AuthState {
   refreshToken: string | null;
   /** User projected from the access token claims. */
   user: AuthUser | null;
+  /**
+   * True while the app is attempting a silent session restore on startup (i.e.
+   * we have a persisted refresh token but no access token yet). Guards wait for
+   * this to settle before deciding to redirect to login.
+   */
+  isInitializing: boolean;
   /** Stores a fresh token pair and re-derives the user from the access token. */
   setSession: (tokens: AuthTokens) => void;
   /** Clears all auth state and the persisted refresh token. */
   clearSession: () => void;
+  /** Marks the silent-restore attempt as finished (success or failure). */
+  setInitialized: () => void;
 }
+
+const storedRefreshToken = readPersistedRefreshToken();
 
 export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
-  // Hydrated on load; the access token is then restored via a refresh call.
-  refreshToken: readPersistedRefreshToken(),
+  refreshToken: storedRefreshToken,
   user: null,
+  // If we have a stored refresh token we need to restore the session before
+  // rendering auth-gated routes; start in the "initializing" state.
+  isInitializing: storedRefreshToken !== null,
 
   setSession: (tokens) => {
     persistRefreshToken(tokens.refreshToken);
@@ -53,13 +65,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: userFromAccessToken(tokens.accessToken),
+      isInitializing: false,
     });
   },
 
   clearSession: () => {
     persistRefreshToken(null);
-    set({ accessToken: null, refreshToken: null, user: null });
+    set({ accessToken: null, refreshToken: null, user: null, isInitializing: false });
   },
+
+  setInitialized: () => set({ isInitializing: false }),
 }));
 
 export { REFRESH_TOKEN_STORAGE_KEY };

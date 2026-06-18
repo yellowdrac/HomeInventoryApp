@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, DropdownMenu, type DropdownMenuItem } from '@/core/components/ui';
 import {
   ChevronRightIcon,
@@ -35,6 +36,7 @@ export function LocationContents({
   locationId,
   locationName,
 }: LocationContentsProps) {
+  const { t } = useTranslation();
   const { data, isPending, isError, error } = useLocationContents(locationId);
   const [dialog, setDialog] = useState<StockDialog>(null);
 
@@ -42,11 +44,11 @@ export function LocationContents({
 
   return (
     <section
-      aria-label={`Contents of ${locationName}`}
+      aria-label={t('locationContents.contentsOf', { name: locationName })}
       className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
     >
       <h2 className="text-sm font-semibold text-slate-900">
-        In {locationName}
+        {t('locationContents.inLocation', { name: locationName })}
       </h2>
 
       <div className="mt-3">
@@ -55,7 +57,7 @@ export function LocationContents({
             className="space-y-2"
             role="status"
             aria-busy="true"
-            aria-label="Loading contents"
+            aria-label={t('locationContents.loadingContents')}
           >
             {[0, 1].map((row) => (
               <div
@@ -72,7 +74,7 @@ export function LocationContents({
 
         {data && data.length === 0 ? (
           <p className="px-1 py-4 text-sm text-slate-500">
-            Nothing is stored here yet.
+            {t('locationContents.nothingStored')}
           </p>
         ) : null}
 
@@ -81,17 +83,17 @@ export function LocationContents({
             {data.map((lot) => {
               const menuItems: DropdownMenuItem[] = [
                 {
-                  label: 'Move',
+                  label: t('stock.move'),
                   icon: <MoveIcon className="size-4" />,
                   onSelect: () => setDialog({ kind: 'move', lot }),
                 },
                 {
-                  label: 'Consume',
+                  label: t('stock.consume'),
                   icon: <MinusIcon className="size-4" />,
                   onSelect: () => setDialog({ kind: 'consume', lot }),
                 },
                 {
-                  label: 'Discard',
+                  label: t('stock.discard'),
                   icon: <TrashIcon className="size-4" />,
                   tone: 'danger',
                   onSelect: () => setDialog({ kind: 'discard', lot }),
@@ -119,7 +121,7 @@ export function LocationContents({
                     <ChevronRightIcon className="size-4 shrink-0 text-slate-400" />
                   </Link>
                   <DropdownMenu
-                    triggerLabel={`Actions for ${lot.itemName} in ${locationName}`}
+                    triggerLabel={t('locationContents.actionsForItem', { item: lot.itemName, location: locationName })}
                     trigger={<MoreVerticalIcon className="size-5" />}
                     items={menuItems}
                   />

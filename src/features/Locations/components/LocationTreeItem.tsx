@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import {
   ChevronRightIcon,
@@ -29,6 +30,7 @@ interface LocationTreeItemProps {
  * context (roving tabindex); this component only renders and reports DOM refs.
  */
 export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
+  const { t } = useTranslation();
   const {
     isExpanded,
     toggle,
@@ -56,27 +58,27 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
   const menuItems: DropdownMenuItem[] = actions
     ? [
         {
-          label: 'Add child',
+          label: t('locationTree.addChild'),
           icon: <PlusIcon className="size-4" />,
           onSelect: () => actions.onAddChild(node),
         },
         {
-          label: 'Edit',
+          label: t('common.edit'),
           icon: <PencilIcon className="size-4" />,
           onSelect: () => actions.onEdit(node),
         },
         {
-          label: 'Move',
+          label: t('stock.move'),
           icon: <MoveIcon className="size-4" />,
           onSelect: () => actions.onMove(node),
         },
         {
-          label: 'Show QR',
+          label: t('locationTree.showQr'),
           icon: <QrCodeIcon className="size-4" />,
           onSelect: () => actions.onShowQr(node),
         },
         {
-          label: 'Delete',
+          label: t('common.delete'),
           icon: <TrashIcon className="size-4" />,
           tone: 'danger',
           onSelect: () => actions.onDelete(node),
@@ -119,7 +121,7 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
           <button
             type="button"
             tabIndex={-1}
-            aria-label={expanded ? 'Collapse' : 'Expand'}
+            aria-label={expanded ? t('locationTree.collapse') : t('locationTree.expand')}
             onClick={(event) => {
               event.stopPropagation();
               toggle(node.id);
@@ -153,7 +155,7 @@ export function LocationTreeItem({ node, level }: LocationTreeItemProps) {
         {actions ? (
           <span onClick={(event) => event.stopPropagation()}>
             <DropdownMenu
-              triggerLabel={`Actions for ${node.name}`}
+              triggerLabel={t('locationTree.actionsFor', { name: node.name })}
               trigger={<MoreVerticalIcon className="size-5" />}
               items={menuItems}
             />

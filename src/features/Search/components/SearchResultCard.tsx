@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ChevronRightIcon, PackageIcon } from '@/core/components/icons';
 import { TrackingTypeBadge } from '@features/Items/components/TrackingTypeBadge';
 import { formatDate, formatQuantity } from '@features/Items/lib/format';
@@ -14,6 +15,7 @@ interface SearchResultCardProps {
  * it is stored, with the location breadcrumb as the most prominent element.
  */
 export function SearchResultCard({ result }: SearchResultCardProps) {
+  const { t } = useTranslation();
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-center gap-3">
@@ -49,9 +51,9 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
 
       <div className="mt-3 border-t border-slate-100 pt-3">
         {result.placements.length === 0 ? (
-          <p className="text-sm text-slate-500">Not stored anywhere yet.</p>
+          <p className="text-sm text-slate-500">{t('search.notStoredYet')}</p>
         ) : (
-          <ul className="space-y-2" aria-label={`Where ${result.name} is stored`}>
+          <ul className="space-y-2" aria-label={t('search.whereItemStored', { name: result.name })}>
             {result.placements.map((placement) => {
               const expiration = formatDate(placement.expirationDate);
               return (
@@ -66,7 +68,7 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
                   <div className="flex items-center gap-3 text-sm">
                     {expiration ? (
                       <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
-                        Expires {expiration}
+                        {t('stock.expires', { date: expiration })}
                       </span>
                     ) : null}
                     <span className="font-semibold text-slate-900">

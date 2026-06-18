@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { useCreateLocation } from '@features/Locations/hooks/useCreateLocation';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
@@ -24,6 +25,7 @@ export function CreateLocationDialog({
   onClose,
   parent,
 }: CreateLocationDialogProps) {
+  const { t } = useTranslation();
   const createLocation = useCreateLocation();
   const {
     register,
@@ -49,8 +51,8 @@ export function CreateLocationDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={parent ? `Add location in "${parent.name}"` : 'Add root location'}
-      description="Give the location a name and choose its type."
+      title={parent ? t('locationForm.addChildTitle', { name: parent.name }) : t('locationForm.addRootTitle')}
+      description={t('locationForm.addDescription')}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {createLocation.isError ? (
@@ -67,10 +69,10 @@ export function CreateLocationDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={createLocation.isPending}>
-            {createLocation.isPending ? 'Creating...' : 'Create'}
+            {createLocation.isPending ? t('common.creating') : t('common.create')}
           </Button>
         </div>
       </form>

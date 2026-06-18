@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog, Label, Select } from '@/core/components/ui';
 import { useMoveLocation } from '@features/Locations/hooks/useMoveLocation';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
@@ -28,6 +29,7 @@ export function MoveLocationDialog({
   node,
   nodes,
 }: MoveLocationDialogProps) {
+  const { t } = useTranslation();
   const moveLocation = useMoveLocation();
   const selectId = useId();
   const [target, setTarget] = useState<string>(node.parentId ?? ROOT_VALUE);
@@ -48,8 +50,8 @@ export function MoveLocationDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={`Move "${node.name}"`}
-      description="Choose where this location should live in the tree."
+      title={t('locationForm.moveTitle', { name: node.name })}
+      description={t('locationForm.moveDescription')}
     >
       <form onSubmit={onSubmit} className="space-y-4">
         {moveLocation.isError ? (
@@ -59,13 +61,13 @@ export function MoveLocationDialog({
         ) : null}
 
         <div className="space-y-1.5">
-          <Label htmlFor={selectId}>New parent</Label>
+          <Label htmlFor={selectId}>{t('locationForm.newParent')}</Label>
           <Select
             id={selectId}
             value={target}
             onChange={(event) => setTarget(event.target.value)}
           >
-            <option value={ROOT_VALUE}>Top level (no parent)</option>
+            <option value={ROOT_VALUE}>{t('locationForm.topLevel')}</option>
             {options.map(({ node: option, level }) => (
               <option
                 key={option.id}
@@ -80,10 +82,10 @@ export function MoveLocationDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={moveLocation.isPending}>
-            {moveLocation.isPending ? 'Moving...' : 'Move'}
+            {moveLocation.isPending ? t('stock.moving') : t('stock.move')}
           </Button>
         </div>
       </form>

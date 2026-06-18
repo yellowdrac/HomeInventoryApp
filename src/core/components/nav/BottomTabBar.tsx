@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import { PRIMARY_NAV_ITEMS } from './navConfig';
 
@@ -8,6 +9,7 @@ import { PRIMARY_NAV_ITEMS } from './navConfig';
  * indicator on the active tab.
  */
 export function BottomTabBar() {
+  const { t } = useTranslation();
   return (
     <nav
       aria-label="Primary navigation"
@@ -37,7 +39,7 @@ export function BottomTabBar() {
                 >
                   <Icon className="size-[18px]" />
                 </span>
-                {item.label}
+                {t(item.labelKey)}
               </>
             )}
           </NavLink>

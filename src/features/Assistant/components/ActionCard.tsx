@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import {
   AlertTriangleIcon,
   BoxIcon,
@@ -28,6 +29,7 @@ type CardState = 'pending' | 'loading' | 'success' | 'error' | 'cancelled';
  * Confirm executes all actions at once; Cancel discards without executing anything.
  */
 export function ActionCard({ actions }: ActionCardProps) {
+  const { t } = useTranslation();
   const [state, setState] = useState<CardState>('pending');
   const [createdEntities, setCreatedEntities] = useState<ExecutedEntityRef[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export function ActionCard({ actions }: ActionCardProps) {
           const msg =
             err instanceof Error
               ? err.message
-              : 'The action could not be executed. Please try again.';
+              : t('assistant.actionError');
           setErrorMessage(msg);
           setState('error');
         },
@@ -67,7 +69,7 @@ export function ActionCard({ actions }: ActionCardProps) {
   return (
     <div
       role="region"
-      aria-label="Proposed action — confirmation required"
+      aria-label={t('assistant.proposedActionLabel')}
       className={cn(
         'mt-3 rounded-xl border p-4',
         state === 'success'
@@ -76,7 +78,7 @@ export function ActionCard({ actions }: ActionCardProps) {
       )}
     >
       {/* Steps */}
-      <ul className="mb-3 space-y-1.5" aria-label="Steps to be executed">
+      <ul className="mb-3 space-y-1.5" aria-label={t('assistant.stepsLabel')}>
         {actions.map((action, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
             <span
@@ -89,7 +91,7 @@ export function ActionCard({ actions }: ActionCardProps) {
               {action.summary}
               {action.missingEntities.length > 0 && (
                 <span className="ml-1 text-slate-500">
-                  (will also create:{' '}
+                  ({t('assistant.willAlsoCreate')}{' '}
                   {action.missingEntities.map((e) => e.name).join(', ')})
                 </span>
               )}
@@ -106,8 +108,7 @@ export function ActionCard({ actions }: ActionCardProps) {
         >
           <AlertTriangleIcon className="size-4 shrink-0" aria-hidden="true" />
           <span>
-            An item or location with this name already exists. Confirm only if you
-            want to create a separate one.
+            {t('assistant.duplicateWarning')}
           </span>
         </div>
       )}
@@ -122,8 +123,8 @@ export function ActionCard({ actions }: ActionCardProps) {
       {/* Success: links to created entities */}
       {state === 'success' && (
         <div className="mb-3">
-          <p className="mb-2 text-sm font-medium text-emerald-700">Created:</p>
-          <ul className="flex flex-wrap gap-2" aria-label="Created entities">
+          <p className="mb-2 text-sm font-medium text-emerald-700">{t('assistant.createdLabel')}</p>
+          <ul className="flex flex-wrap gap-2" aria-label={t('assistant.createdEntitiesLabel')}>
             {createdEntities.map((entity) => {
               const Icon =
                 entity.kind === ReferenceType.Location ? MapPinIcon : BoxIcon;
@@ -154,20 +155,20 @@ export function ActionCard({ actions }: ActionCardProps) {
           <Button
             onClick={handleConfirm}
             isLoading={execute.isPending}
-            aria-label="Confirm proposed action"
+            aria-label={t('assistant.confirmLabel')}
             className="px-3 py-1.5 text-xs"
           >
             <CheckCircleIcon className="size-3.5" aria-hidden="true" />
-            Confirm
+            {t('assistant.confirm')}
           </Button>
           <Button
             variant="ghost"
             onClick={handleCancel}
-            aria-label="Cancel proposed action"
+            aria-label={t('assistant.cancelLabel')}
             className="px-3 py-1.5 text-xs"
           >
             <XIcon className="size-3.5" aria-hidden="true" />
-            Cancel
+            {t('assistant.cancel')}
           </Button>
         </div>
       )}

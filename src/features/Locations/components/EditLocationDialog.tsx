@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { useUpdateLocation } from '@features/Locations/hooks/useUpdateLocation';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
@@ -23,6 +24,7 @@ export function EditLocationDialog({
   onClose,
   node,
 }: EditLocationDialogProps) {
+  const { t } = useTranslation();
   const updateLocation = useUpdateLocation();
   const {
     register,
@@ -47,8 +49,8 @@ export function EditLocationDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Edit location"
-      description="Update the name or type of this location."
+      title={t('locationForm.editTitle')}
+      description={t('locationForm.editDescription')}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {updateLocation.isError ? (
@@ -65,10 +67,10 @@ export function EditLocationDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={updateLocation.isPending}>
-            {updateLocation.isPending ? 'Saving...' : 'Save changes'}
+            {updateLocation.isPending ? t('common.saving') : t('common.saveChanges')}
           </Button>
         </div>
       </form>

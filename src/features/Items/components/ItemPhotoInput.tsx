@@ -1,4 +1,5 @@
 import { useState, type DragEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import { ImageIcon, UploadIcon } from '@/core/components/icons';
 import {
@@ -33,6 +34,7 @@ export function ItemPhotoInput({
   error,
   disabled = false,
 }: ItemPhotoInputProps) {
+  const { t } = useTranslation();
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -83,7 +85,7 @@ export function ItemPhotoInput({
         {previewUrl ? (
           <img
             src={previewUrl}
-            alt="Item photo preview"
+            alt={t('photo.previewAlt')}
             className="max-h-40 w-auto rounded-lg object-contain"
           />
         ) : (
@@ -97,7 +99,7 @@ export function ItemPhotoInput({
 
         <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700">
           <UploadIcon className="size-4" aria-hidden="true" />
-          {previewUrl ? 'Change photo' : 'Upload a photo'}
+          {previewUrl ? t('photo.changePhoto') : t('photo.uploadPhoto')}
         </span>
         <span id={hintId} className="text-xs text-slate-500">
           {ALLOWED_PHOTO_LABEL}, up to {MAX_PHOTO_SIZE_MB} MB

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button } from '@/core/components/ui';
 import {
   ArrowRightIcon,
@@ -34,6 +35,7 @@ export function MovementsList({
   ariaLabel = 'Movements',
   pageSize = 20,
 }: MovementsListProps) {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
 
   // Reset to the first page whenever the filters change.
@@ -64,7 +66,7 @@ export function MovementsList({
         className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-600"
         role="status"
       >
-        No movements recorded yet.
+        {t('movements.noMovements')}
       </p>
     );
   }
@@ -88,24 +90,24 @@ export function MovementsList({
       {totalPages > 1 ? (
         <nav
           className="flex items-center justify-between gap-3"
-          aria-label="Pagination"
+          aria-label={t('movements.pagination')}
         >
           <Button
             variant="secondary"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            Previous
+            {t('common.previous')}
           </Button>
           <span className="text-sm text-slate-600" aria-live="polite">
-            Page {page} of {totalPages}
+            {t('movements.pageOf', { page, totalPages })}
           </span>
           <Button
             variant="secondary"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           >
-            Next
+            {t('common.next')}
           </Button>
         </nav>
       ) : null}
@@ -190,12 +192,13 @@ function MovementPath({ movement }: { movement: Movement }) {
 
 /** Accessible loading placeholder for the movement list. */
 function MovementsSkeleton() {
+  const { t } = useTranslation();
   return (
     <div
       className="space-y-2"
       role="status"
       aria-busy="true"
-      aria-label="Loading movements"
+      aria-label={t('movements.loadingMovements')}
     >
       {[0, 1, 2, 3].map((row) => (
         <div

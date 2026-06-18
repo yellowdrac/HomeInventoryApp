@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button } from '@/core/components/ui';
 import {
   ChevronLeftIcon,
@@ -37,6 +38,7 @@ type Dialog =
 
 /** Detail page for a single item: its fields plus the list of its stock lots. */
 export function ItemDetailView() {
+  const { t } = useTranslation();
   const { id = null } = useParams();
   const navigate = useNavigate();
   const { data: item, isPending, isError, error } = useItem(id);
@@ -51,7 +53,7 @@ export function ItemDetailView() {
         className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 rounded"
       >
         <ChevronLeftIcon className="size-4" />
-        Back to items
+        {t('items.backToItems')}
       </Link>
 
       {isPending ? <ItemDetailSkeleton /> : null}
@@ -74,18 +76,18 @@ export function ItemDetailView() {
                 <dl className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-slate-600">
                   {item.category ? (
                     <div className="flex gap-1">
-                      <dt className="text-slate-400">Category</dt>
+                      <dt className="text-slate-400">{t('items.category')}</dt>
                       <dd>{item.category}</dd>
                     </div>
                   ) : null}
                   {item.barcode ? (
                     <div className="flex gap-1">
-                      <dt className="text-slate-400">Barcode</dt>
+                      <dt className="text-slate-400">{t('items.barcode')}</dt>
                       <dd className="font-mono">{item.barcode}</dd>
                     </div>
                   ) : null}
                   <div className="flex gap-1">
-                    <dt className="text-slate-400">In stock</dt>
+                    <dt className="text-slate-400">{t('items.inStock')}</dt>
                     <dd className="font-semibold text-slate-900">
                       {formatQuantity(item.totalQuantity, item.unit)}
                     </dd>
@@ -99,7 +101,7 @@ export function ItemDetailView() {
                   onClick={() => setDialog({ kind: 'edit-item' })}
                 >
                   <PencilIcon className="size-4" />
-                  Edit
+                  {t('common.edit')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -107,14 +109,14 @@ export function ItemDetailView() {
                   onClick={() => setDialog({ kind: 'delete-item' })}
                 >
                   <TrashIcon className="size-4" />
-                  Delete
+                  {t('common.delete')}
                 </Button>
               </div>
             </div>
           </header>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-900">Photo</h2>
+            <h2 className="text-lg font-semibold text-slate-900">{t('photo.title')}</h2>
             <div className="mt-4">
               <ItemPhotoManager item={item} />
             </div>
@@ -122,17 +124,17 @@ export function ItemDetailView() {
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-900">Stock</h2>
+              <h2 className="text-lg font-semibold text-slate-900">{t('stock.title')}</h2>
               <Button onClick={() => setDialog({ kind: 'add-stock' })}>
                 <PlusIcon className="size-4" />
-                Add stock
+                {t('stock.addStock')}
               </Button>
             </div>
 
             <div className="mt-4">
               {item.lots.length === 0 ? (
                 <p className="rounded-xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-600">
-                  No stock yet. Add stock to record where this item is stored.
+                  {t('stock.noStock')}
                 </p>
               ) : (
                 <StockLotList
@@ -220,12 +222,13 @@ export function ItemDetailView() {
 
 /** Accessible loading placeholder for the item detail page. */
 function ItemDetailSkeleton() {
+  const { t } = useTranslation();
   return (
     <div
       className="space-y-6"
       role="status"
       aria-busy="true"
-      aria-label="Loading item"
+      aria-label={t('items.loadingItem')}
     >
       <div className="h-28 animate-pulse rounded-2xl border border-slate-200 bg-slate-100" />
       <div className="h-48 animate-pulse rounded-2xl border border-slate-200 bg-slate-100" />

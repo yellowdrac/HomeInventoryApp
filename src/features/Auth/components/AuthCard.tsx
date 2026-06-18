@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   HomeIcon,
   PackageIcon,
@@ -23,26 +24,16 @@ const BRAND_BACKDROP =
   'linear-gradient(160deg, rgba(15,23,42,0.55) 0%, rgba(6,78,59,0.78) 55%, rgba(15,23,42,0.94) 100%), ' +
   "url('https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1400&q=80')";
 
-const FEATURES = [
-  {
-    icon: PackageIcon,
-    title: 'Track everything you own',
-    body: 'Catalog items room by room, box by box — and find them in seconds.',
-  },
-  {
-    icon: UsersIcon,
-    title: 'Shared with your household',
-    body: 'Everyone stays in sync with a single, always-current inventory.',
-  },
-  {
-    icon: ShieldCheckIcon,
-    title: 'Private by default',
-    body: 'Your home data stays yours, secured behind your account.',
-  },
+const FEATURE_ICONS = [PackageIcon, UsersIcon, ShieldCheckIcon] as const;
+const FEATURE_KEYS = [
+  { titleKey: 'auth.featureTrack', bodyKey: 'auth.featureTrackBody' },
+  { titleKey: 'auth.featureShared', bodyKey: 'auth.featureSharedBody' },
+  { titleKey: 'auth.featurePrivate', bodyKey: 'auth.featurePrivateBody' },
 ] as const;
 
 /** Compact logo lockup reused on the brand panel and the mobile header. */
 function Logo({ tone }: { tone: 'light' | 'dark' }) {
+  const { t } = useTranslation();
   const text = tone === 'light' ? 'text-white' : 'text-slate-900';
   const badge =
     tone === 'light'
@@ -56,7 +47,7 @@ function Logo({ tone }: { tone: 'light' | 'dark' }) {
         <HomeIcon className="size-5" />
       </span>
       <span className={`text-lg font-bold tracking-tight ${text}`}>
-        HomeInventory
+        {t('common.appName')}
       </span>
     </div>
   );
@@ -74,6 +65,8 @@ export function AuthCard({
   children,
   footer,
 }: AuthCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       {/* Brand panel */}
@@ -89,31 +82,34 @@ export function AuthCard({
 
         <div className="max-w-md">
           <h2 className="text-balance text-4xl font-extrabold leading-tight tracking-tight text-white">
-            Everything you own, perfectly organized.
+            {t('auth.tagline')}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-emerald-50/80">
-            The calm, shared home inventory for the things that matter.
+            {t('auth.taglineBody')}
           </p>
 
           <ul className="mt-10 space-y-5">
-            {FEATURES.map(({ icon: FeatureIcon, title: ftitle, body }) => (
-              <li key={ftitle} className="flex gap-4">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white ring-1 ring-inset ring-white/15 backdrop-blur-sm">
-                  <FeatureIcon className="size-5" />
-                </span>
-                <div>
-                  <p className="font-semibold text-white">{ftitle}</p>
-                  <p className="mt-0.5 text-sm leading-relaxed text-emerald-50/70">
-                    {body}
-                  </p>
-                </div>
-              </li>
-            ))}
+            {FEATURE_KEYS.map(({ titleKey, bodyKey }, index) => {
+              const FeatureIcon = FEATURE_ICONS[index];
+              return (
+                <li key={titleKey} className="flex gap-4">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white ring-1 ring-inset ring-white/15 backdrop-blur-sm">
+                    {FeatureIcon ? <FeatureIcon className="size-5" /> : null}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-white">{t(titleKey)}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-emerald-50/70">
+                      {t(bodyKey)}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
         <p className="text-sm text-emerald-50/60">
-          &copy; {new Date().getFullYear()} HomeInventory
+          &copy; {new Date().getFullYear()} {t('common.appName')}
         </p>
       </aside>
 

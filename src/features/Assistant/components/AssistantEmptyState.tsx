@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SparklesIcon } from '@/core/components/icons';
 
 /** Example prompts in both supported languages; clicking one fills the input. */
@@ -17,6 +18,7 @@ interface AssistantEmptyStateProps {
  * that prefill the composer. Helps users discover what they can ask.
  */
 export function AssistantEmptyState({ onPick }: AssistantEmptyStateProps) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center gap-4 px-4 py-10 text-center">
       <span className="flex size-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
@@ -24,11 +26,10 @@ export function AssistantEmptyState({ onPick }: AssistantEmptyStateProps) {
       </span>
       <div className="space-y-1">
         <h2 className="text-lg font-semibold text-slate-900">
-          Ask about your inventory
+          {t('assistant.emptyTitle')}
         </h2>
         <p className="max-w-md text-sm text-slate-600">
-          Find where things are and how much stock you have. Ask in English or
-          Spanish.
+          {t('assistant.emptyDescription')}
         </p>
       </div>
       <ul className="flex flex-wrap justify-center gap-2">

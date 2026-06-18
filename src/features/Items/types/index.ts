@@ -43,6 +43,15 @@ export interface StockLot {
   acquiredDate: string | null;
 }
 
+/** A predefined unit of measure from the catalog (mirrors `UnitDto`). */
+export interface UnitDto {
+  id: string;
+  name: string;
+  symbol: string;
+  category: string;
+  sortOrder: number;
+}
+
 /** List read model of an item, with its total quantity across all lots. */
 export interface Item {
   id: string;
@@ -50,9 +59,12 @@ export interface Item {
   category: string | null;
   barcode: string | null;
   trackingType: TrackingType;
+  unitId: string | null;
   unit: string | null;
   photoUrl: string | null;
   totalQuantity: number;
+  /** Alert threshold: dashboard flags this item when total quantity drops below this. Null means no threshold. */
+  minimumQuantity: number | null;
 }
 
 /** Detailed read model of an item: its fields plus every stock lot it owns. */
@@ -83,6 +95,8 @@ export interface GetItemsParams {
   category?: string;
   page?: number;
   pageSize?: number;
+  /** When true, only return items whose total quantity is below their minimumQuantity threshold. */
+  belowMinimum?: boolean;
 }
 
 export interface CreateItemRequest {
@@ -90,8 +104,9 @@ export interface CreateItemRequest {
   category: string | null;
   barcode: string | null;
   trackingType: TrackingType;
-  unit: string | null;
+  unitId: string | null;
   photoUrl: string | null;
+  minimumQuantity: number | null;
 }
 
 export type UpdateItemRequest = CreateItemRequest;

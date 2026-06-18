@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Input, Label, Select } from '@/core/components/ui';
 import { LocationPicker } from '@features/Locations/components/LocationPicker';
 import { useItems } from '@features/Items/hooks/useItems';
@@ -28,6 +29,7 @@ interface MovementFiltersProps {
 
 /** Filter bar for the movement history: item, type, date range and location. */
 export function MovementFilters({ value, onChange }: MovementFiltersProps) {
+  const { t } = useTranslation();
   const itemFilterId = useId();
   const typeFilterId = useId();
   const fromFilterId = useId();
@@ -43,13 +45,13 @@ export function MovementFilters({ value, onChange }: MovementFiltersProps) {
     <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor={itemFilterId}>Item</Label>
+          <Label htmlFor={itemFilterId}>{t('movements.filterItem')}</Label>
           <Select
             id={itemFilterId}
             value={value.itemId}
             onChange={(event) => patch({ itemId: event.target.value })}
           >
-            <option value="">All items</option>
+            <option value="">{t('movements.allItems')}</option>
             {items.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
@@ -59,13 +61,13 @@ export function MovementFilters({ value, onChange }: MovementFiltersProps) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor={typeFilterId}>Type</Label>
+          <Label htmlFor={typeFilterId}>{t('movements.filterType')}</Label>
           <Select
             id={typeFilterId}
             value={value.type}
             onChange={(event) => patch({ type: event.target.value })}
           >
-            <option value="">All types</option>
+            <option value="">{t('movements.allTypes')}</option>
             {MOVEMENT_TYPE_VALUES.map((type) => (
               <option key={type} value={type}>
                 {MOVEMENT_TYPE_LABELS[type]}
@@ -75,7 +77,7 @@ export function MovementFilters({ value, onChange }: MovementFiltersProps) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor={fromFilterId}>From date</Label>
+          <Label htmlFor={fromFilterId}>{t('movements.filterFromDate')}</Label>
           <Input
             id={fromFilterId}
             type="date"
@@ -86,7 +88,7 @@ export function MovementFilters({ value, onChange }: MovementFiltersProps) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor={toFilterId}>To date</Label>
+          <Label htmlFor={toFilterId}>{t('movements.filterToDate')}</Label>
           <Input
             id={toFilterId}
             type="date"
@@ -99,7 +101,7 @@ export function MovementFilters({ value, onChange }: MovementFiltersProps) {
 
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label>Location</Label>
+          <Label>{t('movements.filterLocation')}</Label>
           {value.locationId ? (
             <Button
               type="button"
@@ -107,7 +109,7 @@ export function MovementFilters({ value, onChange }: MovementFiltersProps) {
               className="h-auto px-2 py-1 text-xs"
               onClick={() => patch({ locationId: '' })}
             >
-              Clear
+              {t('common.clear')}
             </Button>
           ) : null}
         </div>

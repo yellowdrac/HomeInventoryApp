@@ -12,9 +12,11 @@ const uniqueItem: Item = {
   category: null,
   barcode: null,
   trackingType: TrackingType.Unique,
+  unitId: null,
   unit: null,
   photoUrl: null,
   totalQuantity: 0,
+  minimumQuantity: null,
 };
 
 let mock: MockAdapter;

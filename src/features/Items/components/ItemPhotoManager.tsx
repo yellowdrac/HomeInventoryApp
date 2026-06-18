@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { TrashIcon } from '@/core/components/icons';
 import { useObjectUrl } from '@/core/hooks/useObjectUrl';
@@ -20,6 +21,7 @@ interface ItemPhotoManagerProps {
  * deleting invalidates the item so a fresh presigned URL is fetched.
  */
 export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
+  const { t } = useTranslation();
   const inputId = useId();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
@@ -58,14 +60,14 @@ export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
             onClick={() => setSelectedFile(null)}
             disabled={upload.isPending}
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
             onClick={confirmUpload}
             isLoading={upload.isPending}
           >
-            {upload.isPending ? 'Uploading...' : 'Upload photo'}
+            {upload.isPending ? t('photo.uploading') : t('photo.uploadPhotoBtn')}
           </Button>
         </div>
       ) : item.photoUrl ? (
@@ -78,7 +80,7 @@ export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
             disabled={isBusy}
           >
             <TrashIcon className="size-4" />
-            Remove photo
+            {t('photo.removePhoto')}
           </Button>
         </div>
       ) : null}
@@ -92,8 +94,8 @@ export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
           open
           role="alertdialog"
           onClose={() => setIsConfirmingDelete(false)}
-          title="Remove photo"
-          description={`This permanently removes the photo for "${item.name}".`}
+          title={t('photo.removePhotoTitle')}
+          description={t('photo.removePhotoDescription', { name: item.name })}
           footer={
             <>
               <Button
@@ -101,7 +103,7 @@ export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
                 onClick={() => setIsConfirmingDelete(false)}
                 disabled={remove.isPending}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 className="bg-red-600 hover:bg-red-500 focus-visible:ring-red-600"
@@ -112,13 +114,13 @@ export function ItemPhotoManager({ item }: ItemPhotoManagerProps) {
                   })
                 }
               >
-                {remove.isPending ? 'Removing...' : 'Remove photo'}
+                {remove.isPending ? t('photo.removing') : t('photo.removePhoto')}
               </Button>
             </>
           }
         >
           <p className="text-sm text-slate-600">
-            Are you sure you want to remove this photo?
+            {t('photo.removePhotoConfirm')}
           </p>
         </Dialog>
       ) : null}

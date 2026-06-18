@@ -74,6 +74,19 @@ async function refreshAccessToken(): Promise<string> {
 }
 
 /**
+ * Triggers a token refresh and coalesces concurrent callers into a single in-flight
+ * request. Both the proactive scheduler (useTokenRefresh) and the reactive 401
+ * interceptor call this so they can never double-consume the same refresh token.
+ * Returns the new access token.
+ */
+export async function performRefresh(): Promise<string> {
+  refreshPromise ??= refreshAccessToken().finally(() => {
+    refreshPromise = null;
+  });
+  return refreshPromise;
+}
+
+/**
  * Response interceptor: on a 401, transparently refresh the access token and
  * replay the original request once. If the refresh fails, the session is
  * cleared (logout) and the error propagates.
@@ -97,10 +110,7 @@ apiClient.interceptors.response.use(
     original._retry = true;
 
     try {
-      refreshPromise ??= refreshAccessToken().finally(() => {
-        refreshPromise = null;
-      });
-      const newAccessToken = await refreshPromise;
+      const newAccessToken = await performRefresh();
       original.headers.Authorization = `Bearer ${newAccessToken}`;
       return await apiClient(original);
     } catch (refreshError) {

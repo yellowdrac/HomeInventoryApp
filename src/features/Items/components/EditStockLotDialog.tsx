@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog, FormField, Input } from '@/core/components/ui';
 import { useUpdateStockLot } from '@features/Items/hooks/useUpdateStockLot';
 import { getItemErrorMessage } from '@features/Items/lib/itemErrors';
@@ -25,6 +26,7 @@ export function EditStockLotDialog({
   item,
   lot,
 }: EditStockLotDialogProps) {
+  const { t } = useTranslation();
   const updateStockLot = useUpdateStockLot();
   const isUnique = item.trackingType === TrackingType.Unique;
 
@@ -60,8 +62,8 @@ export function EditStockLotDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Edit stock"
-      description={`Stored in ${lot.locationName}.`}
+      title={t('stock.editStockTitle')}
+      description={t('stock.storedIn', { location: lot.locationName })}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {updateStockLot.isError ? (
@@ -72,12 +74,12 @@ export function EditStockLotDialog({
 
         <FormField
           id="edit-lot-quantity"
-          label="Quantity"
+          label={t('stock.quantity')}
           hint={
             isUnique
-              ? 'Unique items always have a quantity of 1.'
+              ? t('stock.uniqueQuantityHint')
               : item.unit
-                ? `Measured in ${item.unit}.`
+                ? t('stock.measuredIn', { unit: item.unit })
                 : undefined
           }
           error={isUnique ? undefined : errors.quantity?.message}
@@ -98,8 +100,8 @@ export function EditStockLotDialog({
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             id="edit-lot-acquired"
-            label="Acquired date"
-            hint="Optional"
+            label={t('stock.acquiredDate')}
+            hint={t('common.optional')}
             error={errors.acquiredDate?.message}
           >
             {(aria) => (
@@ -109,8 +111,8 @@ export function EditStockLotDialog({
 
           <FormField
             id="edit-lot-expiration"
-            label="Expiration date"
-            hint="Optional"
+            label={t('stock.expirationDate')}
+            hint={t('common.optional')}
             error={errors.expirationDate?.message}
           >
             {(aria) => (
@@ -121,10 +123,10 @@ export function EditStockLotDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={updateStockLot.isPending}>
-            {updateStockLot.isPending ? 'Saving...' : 'Save changes'}
+            {updateStockLot.isPending ? t('common.saving') : t('common.saveChanges')}
           </Button>
         </div>
       </form>

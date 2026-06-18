@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button } from '@/core/components/ui';
 import { TrashIcon, UtensilsIcon } from '@/core/components/icons';
 import { ConsumeStockDialog } from '@features/Items/components/ConsumeStockDialog';
@@ -40,6 +41,7 @@ function toStockLot(lot: ExpiringLot): StockLot {
  * Optionally scoped to a location subtree and a configurable warning window.
  */
 export function KitchenView() {
+  const { t } = useTranslation();
   const [withinDays, setWithinDays] = useState(7);
   const [locationId, setLocationId] = useState<string | null>(null);
   const [dialog, setDialog] = useState<KitchenDialog>(null);
@@ -62,10 +64,10 @@ export function KitchenView() {
       <header className="space-y-1">
         <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight sm:text-3xl">
           <UtensilsIcon className="size-7 text-slate-400" />
-          Kitchen
+          {t('kitchen.title')}
         </h1>
         <p className="text-sm text-slate-600">
-          Use what expires first. Tracks every lot with an expiration date.
+          {t('kitchen.description')}
         </p>
       </header>
 
@@ -88,7 +90,7 @@ export function KitchenView() {
         <div className="space-y-4 lg:col-span-2">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-slate-900">
-              Expiring first
+              {t('kitchen.expiringFirst')}
             </h2>
             {expiredCount > 0 ? (
               <Button
@@ -97,7 +99,7 @@ export function KitchenView() {
                 onClick={() => setDialog({ kind: 'discard-all' })}
               >
                 <TrashIcon className="size-4" />
-                Discard all expired
+                {t('kitchen.discardAllExpired')}
               </Button>
             ) : null}
           </div>
@@ -113,7 +115,7 @@ export function KitchenView() {
               className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-600"
               role="status"
             >
-              Nothing expiring soon.
+              {t('kitchen.nothingExpiringSoon')}
             </p>
           ) : null}
 
@@ -159,12 +161,13 @@ export function KitchenView() {
 
 /** Accessible loading placeholder for the FEFO list. */
 function ExpiringSkeleton() {
+  const { t } = useTranslation();
   return (
     <div
       className="space-y-2"
       role="status"
       aria-busy="true"
-      aria-label="Loading perishable stock"
+      aria-label={t('kitchen.loadingPerishable')}
     >
       {[0, 1, 2, 3].map((row) => (
         <div

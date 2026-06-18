@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   MapPinIcon,
   MinusIcon,
@@ -34,6 +35,7 @@ export function StockLotList({
   onEdit,
   onDelete,
 }: StockLotListProps) {
+  const { t } = useTranslation();
   return (
     <ul className="divide-y divide-slate-100">
       {lots.map((lot) => {
@@ -41,28 +43,28 @@ export function StockLotList({
         const acquired = formatDate(lot.acquiredDate);
         const menuItems: DropdownMenuItem[] = [
           {
-            label: 'Move',
+            label: t('stock.move'),
             icon: <MoveIcon className="size-4" />,
             onSelect: () => onMove(lot),
           },
           {
-            label: 'Consume',
+            label: t('stock.consume'),
             icon: <MinusIcon className="size-4" />,
             onSelect: () => onConsume(lot),
           },
           {
-            label: 'Discard',
+            label: t('stock.discard'),
             icon: <TrashIcon className="size-4" />,
             tone: 'danger',
             onSelect: () => onDiscard(lot),
           },
           {
-            label: 'Edit',
+            label: t('common.edit'),
             icon: <PencilIcon className="size-4" />,
             onSelect: () => onEdit(lot),
           },
           {
-            label: 'Delete',
+            label: t('common.delete'),
             icon: <TrashIcon className="size-4" />,
             tone: 'danger',
             onSelect: () => onDelete(lot),
@@ -91,10 +93,10 @@ export function StockLotList({
                 </p>
               ) : null}
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-                {acquired ? <span>Acquired {acquired}</span> : null}
+                {acquired ? <span>{t('stock.acquired', { date: acquired })}</span> : null}
                 {expiration ? (
                   <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 font-medium text-amber-700">
-                    Expires {expiration}
+                    {t('stock.expires', { date: expiration })}
                   </span>
                 ) : null}
               </div>
@@ -105,7 +107,7 @@ export function StockLotList({
             </span>
 
             <DropdownMenu
-              triggerLabel={`Actions for stock in ${lot.locationName}`}
+              triggerLabel={t('stock.actionsForLot', { location: lot.locationName })}
               trigger={<MoreVerticalIcon className="size-5" />}
               items={menuItems}
             />

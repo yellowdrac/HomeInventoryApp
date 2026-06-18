@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Button, FormField, Input, Alert } from '@/core/components/ui';
 import {
   EyeIcon,
@@ -23,6 +24,7 @@ import {
  * so the route guard sends them to the household setup view.
  */
 export function RegisterView() {
+  const { t } = useTranslation();
   const registerMutation = useRegister();
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -38,16 +40,16 @@ export function RegisterView() {
 
   return (
     <AuthCard
-      title="Create your account"
-      description="Set up HomeInventory to start tracking your household."
+      title={t('auth.registerTitle')}
+      description={t('auth.registerDescription')}
       footer={
         <>
-          Already have an account?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
           <Link
             to="/login"
             className="font-semibold text-emerald-600 hover:text-emerald-500"
           >
-            Sign in
+            {t('auth.signIn')}
           </Link>
         </>
       }
@@ -61,7 +63,7 @@ export function RegisterView() {
 
         <FormField
           id="displayName"
-          label="Display name"
+          label={t('auth.displayName')}
           error={errors.displayName?.message}
         >
           {(aria) => (
@@ -78,7 +80,7 @@ export function RegisterView() {
           )}
         </FormField>
 
-        <FormField id="email" label="Email" error={errors.email?.message}>
+        <FormField id="email" label={t('auth.email')} error={errors.email?.message}>
           {(aria) => (
             <div className="relative">
               <MailIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
@@ -96,8 +98,8 @@ export function RegisterView() {
 
         <FormField
           id="password"
-          label="Password"
-          hint="At least 8 characters."
+          label={t('auth.password')}
+          hint={t('auth.passwordHint')}
           error={errors.password?.message}
         >
           {(aria) => (
@@ -113,7 +115,7 @@ export function RegisterView() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 aria-pressed={showPassword}
                 className="absolute right-1 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
               >
@@ -133,8 +135,8 @@ export function RegisterView() {
           isLoading={registerMutation.isPending}
         >
           {registerMutation.isPending
-            ? 'Creating account...'
-            : 'Create account'}
+            ? t('auth.creatingAccount')
+            : t('auth.createAccount')}
         </Button>
       </form>
     </AuthCard>

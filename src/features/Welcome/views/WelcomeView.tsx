@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/core/components/ui';
 import { env } from '@/core/config/env';
 import { useHealth } from '@features/Welcome/hooks/useHealth';
@@ -8,17 +9,17 @@ import { useHealth } from '@features/Welcome/hooks/useHealth';
  * provided by the protected layout.
  */
 export function WelcomeView() {
+  const { t } = useTranslation();
   const { data, isPending, isError, error, refetch, isFetching } = useHealth();
 
   return (
     <section className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Welcome to HomeInventory
+          {t('welcome.title')}
         </h1>
         <p className="max-w-prose text-slate-600">
-          Shared household inventory. You are signed in. Below is a live check
-          against the backend health endpoint.
+          {t('welcome.description')}
         </p>
       </div>
 
@@ -32,7 +33,7 @@ export function WelcomeView() {
 
       <div className="flex items-center gap-3">
         <Button onClick={() => refetch()} disabled={isFetching}>
-          {isFetching ? 'Checking…' : 'Re-check connection'}
+          {isFetching ? t('welcome.checking') : t('welcome.recheck')}
         </Button>
         <span className="text-sm text-slate-500">
           API:{' '}
@@ -60,19 +61,20 @@ function ConnectionStatus({
   version,
   status,
 }: ConnectionStatusProps) {
+  const { t } = useTranslation();
+
   if (isPending) {
     return (
-      <StatusCard tone="neutral" title="Connecting…">
-        Reaching the backend health endpoint.
+      <StatusCard tone="neutral" title={t('welcome.connecting')}>
+        {t('welcome.connectingDescription')}
       </StatusCard>
     );
   }
 
   if (isError) {
     return (
-      <StatusCard tone="error" title="Connection error">
-        Could not reach the backend. Make sure it is running and that{' '}
-        <code className="font-mono">VITE_API_URL</code> is correct.
+      <StatusCard tone="error" title={t('welcome.connectionError')}>
+        {t('welcome.connectionErrorDescription')}
         <p className="mt-2 font-mono text-xs break-words opacity-80">
           {getErrorMessage(error)}
         </p>
@@ -81,15 +83,15 @@ function ConnectionStatus({
   }
 
   return (
-    <StatusCard tone="success" title="Connected">
-      Backend is reachable
+    <StatusCard tone="success" title={t('welcome.connected')}>
+      {t('welcome.backendReachable')}
       {version ? (
         <>
           {' '}
-          (version <span className="font-semibold">v{version}</span>)
+          ({t('welcome.version')} <span className="font-semibold">v{version}</span>)
         </>
       ) : (
-        <> (status: {status ?? 'ok'})</>
+        <> ({t('welcome.statusLabel')}: {status ?? 'ok'})</>
       )}
       .
     </StatusCard>

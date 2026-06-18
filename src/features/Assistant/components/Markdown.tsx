@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
+import { Link } from 'react-router';
 import { cn } from '@/core/lib/cn';
 
 /**
@@ -140,17 +141,28 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
       );
     } else if (linkText !== undefined && linkHref !== undefined) {
       const href = safeHref(linkHref);
+      const isInternal = href !== null && /^[/#]/.test(href);
       nodes.push(
         href ? (
-          <a
-            key={key}
-            href={href}
-            className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
-            target={/^https?:/i.test(href) ? '_blank' : undefined}
-            rel={/^https?:/i.test(href) ? 'noopener noreferrer' : undefined}
-          >
-            {linkText}
-          </a>
+          isInternal ? (
+            <Link
+              key={key}
+              to={href}
+              className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+            >
+              {linkText}
+            </Link>
+          ) : (
+            <a
+              key={key}
+              href={href}
+              className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {linkText}
+            </a>
+          )
         ) : (
           linkText
         ),

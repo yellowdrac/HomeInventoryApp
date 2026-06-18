@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Button, FormField, Input, Alert } from '@/core/components/ui';
 import { getHouseholdErrorMessage } from '@features/Household/lib/householdErrors';
 import { cn } from '@/core/lib/cn';
@@ -21,36 +22,36 @@ type Mode = 'create' | 'join';
  * `householdId`, after which the guard lets the user into the app.
  */
 export function HouseholdSetupView() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>('create');
 
   return (
     <section className="mx-auto max-w-md space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold tracking-tight">
-          Set up your household
+          {t('household.setupTitle')}
         </h1>
         <p className="text-slate-600">
-          Create a new household or join an existing one to start sharing your
-          inventory.
+          {t('household.setupDescription')}
         </p>
       </div>
 
       <div
         role="tablist"
-        aria-label="Household setup mode"
+        aria-label={t('household.setupModeLabel')}
         className="grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1"
       >
         <ModeTab
           mode="create"
           activeMode={mode}
           onSelect={setMode}
-          label="Create"
+          label={t('household.create')}
         />
         <ModeTab
           mode="join"
           activeMode={mode}
           onSelect={setMode}
-          label="Join"
+          label={t('household.join')}
         />
       </div>
 
@@ -89,6 +90,7 @@ function ModeTab({ mode, activeMode, onSelect, label }: ModeTabProps) {
 }
 
 function CreateForm() {
+  const { t } = useTranslation();
   const createHousehold = useCreateHousehold();
   const {
     register,
@@ -116,11 +118,11 @@ function CreateForm() {
 
       <FormField
         id="householdName"
-        label="Household name"
+        label={t('household.householdName')}
         error={errors.name?.message}
       >
         {(aria) => (
-          <Input placeholder="The Doe family" {...aria} {...register('name')} />
+          <Input placeholder={t('household.householdNamePlaceholder')} {...aria} {...register('name')} />
         )}
       </FormField>
 
@@ -129,13 +131,14 @@ function CreateForm() {
         className="w-full"
         isLoading={createHousehold.isPending}
       >
-        {createHousehold.isPending ? 'Creating...' : 'Create household'}
+        {createHousehold.isPending ? t('household.creating') : t('household.createHousehold')}
       </Button>
     </form>
   );
 }
 
 function JoinForm() {
+  const { t } = useTranslation();
   const joinHousehold = useJoinHousehold();
   const {
     register,
@@ -163,8 +166,8 @@ function JoinForm() {
 
       <FormField
         id="joinCode"
-        label="Join code"
-        hint="The 8-character code shared by the household owner."
+        label={t('household.joinCode')}
+        hint={t('household.joinCodeHint')}
         error={errors.joinCode?.message}
       >
         {(aria) => (
@@ -182,7 +185,7 @@ function JoinForm() {
         className="w-full"
         isLoading={joinHousehold.isPending}
       >
-        {joinHousehold.isPending ? 'Joining...' : 'Join household'}
+        {joinHousehold.isPending ? t('household.joining') : t('household.joinHousehold')}
       </Button>
     </form>
   );

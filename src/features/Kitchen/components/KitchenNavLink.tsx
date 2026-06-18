@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import { useKitchenOverview } from '@features/Kitchen/hooks/useKitchenOverview';
 
@@ -8,6 +9,7 @@ import { useKitchenOverview } from '@features/Kitchen/hooks/useKitchenOverview';
  * count is zero. Shares the nav link styling used by the other header links.
  */
 export function KitchenNavLink() {
+  const { t } = useTranslation();
   const { data } = useKitchenOverview();
   const alertCount =
     (data?.expiredCount ?? 0) + (data?.expiringSoonCount ?? 0);
@@ -24,11 +26,11 @@ export function KitchenNavLink() {
         )
       }
     >
-      Kitchen
+      {t('nav.kitchen')}
       {alertCount > 0 ? (
         <span
           className="inline-flex min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-xs font-semibold text-white"
-          aria-label={`${alertCount} items need attention`}
+          aria-label={t('nav.kitchenAlertsAriaLabel', { count: alertCount })}
         >
           {alertCount}
         </span>

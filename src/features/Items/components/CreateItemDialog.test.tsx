@@ -36,11 +36,12 @@ describe('CreateItemDialog', () => {
     // Defaults to Quantity, so the unit field is present.
     expect(screen.getByLabelText('Unit')).toBeInTheDocument();
 
-    await user.selectOptions(screen.getByLabelText('Tracking type'), 'Unique');
+    // Tracking type is a pill toggle — click the button directly.
+    await user.click(screen.getByRole('button', { name: 'Unique' }));
 
     expect(screen.queryByLabelText('Unit')).not.toBeInTheDocument();
 
-    await user.selectOptions(screen.getByLabelText('Tracking type'), 'Quantity');
+    await user.click(screen.getByRole('button', { name: 'Quantity' }));
 
     expect(screen.getByLabelText('Unit')).toBeInTheDocument();
   });

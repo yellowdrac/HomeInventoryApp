@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { useDeleteItem } from '@features/Items/hooks/useDeleteItem';
 import { getItemErrorMessage } from '@features/Items/lib/itemErrors';
@@ -22,6 +23,7 @@ export function DeleteItemDialog({
   item,
   onDeleted,
 }: DeleteItemDialogProps) {
+  const { t } = useTranslation();
   const deleteItem = useDeleteItem();
 
   function onConfirm() {
@@ -40,16 +42,16 @@ export function DeleteItemDialog({
       open={open}
       onClose={onClose}
       role="alertdialog"
-      title={`Delete "${item.name}"?`}
+      title={t('deleteItem.title', { name: item.name })}
       description={
         hasStock
-          ? 'This item still has stock. You will need to remove its stock lots first.'
-          : 'This action cannot be undone.'
+          ? t('deleteItem.hasStockDescription')
+          : t('common.cannotBeUndone')
       }
       footer={
         <>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
@@ -58,7 +60,7 @@ export function DeleteItemDialog({
             onClick={onConfirm}
             isLoading={deleteItem.isPending}
           >
-            {deleteItem.isPending ? 'Deleting...' : 'Delete'}
+            {deleteItem.isPending ? t('common.deleting') : t('common.delete')}
           </Button>
         </>
       }

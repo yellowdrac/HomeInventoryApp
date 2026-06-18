@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { BoxIcon, MapPinIcon } from '@/core/components/icons';
 import { referenceHref } from '@features/Assistant/lib/references';
 import { ReferenceType, type ChatReference } from '@features/Assistant/types';
@@ -12,12 +13,13 @@ interface ReferenceLinksProps {
  * existing detail pages, so the user can jump straight to the source.
  */
 export function ReferenceLinks({ references }: ReferenceLinksProps) {
+  const { t } = useTranslation();
   if (references.length === 0) {
     return null;
   }
 
   return (
-    <ul className="mt-3 flex flex-wrap gap-2" aria-label="Referenced in your inventory">
+    <ul className="mt-3 flex flex-wrap gap-2" aria-label={t('assistant.referencedIn')}>
       {references.map((reference) => {
         const Icon =
           reference.type === ReferenceType.Location ? MapPinIcon : BoxIcon;

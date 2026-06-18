@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   AlertTriangleIcon,
   ClockIcon,
@@ -20,13 +21,15 @@ export function DashboardSummaryCards({
   expiringWindowDays,
   isLoading,
 }: DashboardSummaryCardsProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <div
         className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
         role="status"
         aria-busy="true"
-        aria-label="Loading summary"
+        aria-label={t('dashboard.loadingSummary')}
       >
         {[0, 1, 2, 3].map((card) => (
           <div
@@ -41,25 +44,25 @@ export function DashboardSummaryCards({
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <SummaryCard
-        label="Items"
+        label={t('dashboard.items')}
         count={summary.itemCount}
         icon={<PackageIcon className="size-5" />}
         tone="bg-emerald-50 text-emerald-700"
       />
       <SummaryCard
-        label="Locations"
+        label={t('dashboard.locations')}
         count={summary.locationCount}
         icon={<MapPinIcon className="size-5" />}
         tone="bg-sky-50 text-sky-700"
       />
       <SummaryCard
-        label={`Expiring soon (next ${expiringWindowDays} days)`}
+        label={t('dashboard.expiringSoon', { days: expiringWindowDays })}
         count={summary.expiringSoonCount}
         icon={<ClockIcon className="size-5" />}
         tone="bg-amber-50 text-amber-700"
       />
       <SummaryCard
-        label="Expired"
+        label={t('dashboard.expired')}
         count={summary.expiredCount}
         icon={<AlertTriangleIcon className="size-5" />}
         tone="bg-red-50 text-red-700"

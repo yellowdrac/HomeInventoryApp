@@ -1,40 +1,41 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { FormField, Input, Select } from '@/core/components/ui';
 import {
   TRACKING_TYPE_VALUES,
   TRACKING_TYPE_LABELS,
 } from '@features/Items/types';
+import type { UnitDto } from '@features/Items/types';
 import type { ItemFormValues } from '@features/Items/schemas';
 
 interface ItemFormFieldsProps {
   register: UseFormRegister<ItemFormValues>;
   errors: FieldErrors<ItemFormValues>;
-  /** Prefix for field ids so multiple dialogs never collide. */
   idPrefix: string;
-  /** Whether the item is quantity-tracked; controls the `unit` field. */
   showUnit: boolean;
+  units?: UnitDto[];
 }
 
-/**
- * Shared fields for the create and edit item dialogs. The `unit` field is only
- * rendered for quantity-tracked items, since unique items are single pieces.
- */
 export function ItemFormFields({
   register,
   errors,
   idPrefix,
   showUnit,
+  units = [],
 }: ItemFormFieldsProps) {
+  const { t } = useTranslation();
+  const categories = [...new Set(units.map((u) => u.category))];
+
   return (
     <div className="space-y-4">
       <FormField
         id={`${idPrefix}-name`}
-        label="Name"
+        label={t('itemForm.name')}
         error={errors.name?.message}
       >
         {(aria) => (
           <Input
-            placeholder="e.g. Olive oil"
+            placeholder={t('itemForm.namePlaceholder')}
             autoComplete="off"
             {...aria}
             {...register('name')}
@@ -44,13 +45,13 @@ export function ItemFormFields({
 
       <FormField
         id={`${idPrefix}-category`}
-        label="Category"
-        hint="Optional"
+        label={t('itemForm.category')}
+        hint={t('common.optional')}
         error={errors.category?.message}
       >
         {(aria) => (
           <Input
-            placeholder="e.g. Pantry"
+            placeholder={t('itemForm.categoryPlaceholder')}
             autoComplete="off"
             {...aria}
             {...register('category')}
@@ -60,13 +61,13 @@ export function ItemFormFields({
 
       <FormField
         id={`${idPrefix}-barcode`}
-        label="Barcode"
-        hint="Optional"
+        label={t('itemForm.barcode')}
+        hint={t('common.optional')}
         error={errors.barcode?.message}
       >
         {(aria) => (
           <Input
-            placeholder="e.g. 8412345678901"
+            placeholder={t('itemForm.barcodePlaceholder')}
             autoComplete="off"
             {...aria}
             {...register('barcode')}
@@ -76,7 +77,7 @@ export function ItemFormFields({
 
       <FormField
         id={`${idPrefix}-trackingType`}
-        label="Tracking type"
+        label={t('itemForm.trackingType')}
         error={errors.trackingType?.message}
       >
         {(aria) => (
@@ -93,17 +94,27 @@ export function ItemFormFields({
       {showUnit ? (
         <FormField
           id={`${idPrefix}-unit`}
-          label="Unit"
-          hint="Optional, e.g. L, kg, units"
-          error={errors.unit?.message}
+          label={t('itemForm.unit')}
+          error={errors.unitId?.message}
         >
           {(aria) => (
-            <Input
-              placeholder="e.g. L"
-              autoComplete="off"
-              {...aria}
-              {...register('unit')}
-            />
+            <Select {...aria} {...register('unitId')}>
+              <option value="">{t('itemForm.noUnit')}</option>
+              {categories.map((cat) => (
+                <optgroup key={cat} label={t(`units.categories.${cat}`, { defaultValue: cat })}>
+                  {units
+                    .filter((u) => u.category === cat)
+                    .map((u) => {
+                      const nameKey = `units.names.${u.symbol.replace(/\s+/g, '_')}`;
+                      return (
+                        <option key={u.id} value={u.id}>
+                          {t(nameKey, { defaultValue: u.name })} ({u.symbol})
+                        </option>
+                      );
+                    })}
+                </optgroup>
+              ))}
+            </Select>
           )}
         </FormField>
       ) : null}

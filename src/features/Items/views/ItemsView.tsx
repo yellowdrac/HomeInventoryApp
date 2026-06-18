@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Input, Label } from '@/core/components/ui';
 import {
   ChevronRightIcon,
@@ -22,6 +23,7 @@ import type { Item } from '@features/Items/types';
  * protected layout.
  */
 export function ItemsView() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [isCreateOpen, setCreateOpen] = useState(false);
   const searchId = useId();
@@ -39,21 +41,21 @@ export function ItemsView() {
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Items
+            {t('items.title')}
           </h1>
           <p className="text-sm text-slate-600">
-            Everything you keep at home and how much you have.
+            {t('items.description')}
           </p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>
           <PlusIcon className="size-4" />
-          Add item
+          {t('items.addItem')}
         </Button>
       </header>
 
       <div className="relative">
         <Label htmlFor={searchId} className="sr-only">
-          Search items
+          {t('items.searchLabel')}
         </Label>
         <SearchIcon
           className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
@@ -63,7 +65,7 @@ export function ItemsView() {
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search items by name"
+          placeholder={t('items.searchPlaceholder')}
           autoComplete="off"
           className="pl-9"
         />
@@ -81,7 +83,7 @@ export function ItemsView() {
             className="rounded-2xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-600"
             role="status"
           >
-            No items match &ldquo;{nameFilter}&rdquo;.
+            {t('items.noItemsMatch', { query: nameFilter })}
           </p>
         ) : (
           <ItemsEmptyState onCreate={() => setCreateOpen(true)} />
@@ -92,7 +94,7 @@ export function ItemsView() {
         <ul
           className="space-y-2"
           aria-busy={isPlaceholderData || undefined}
-          aria-label="Items"
+          aria-label={t('items.itemsLabel')}
         >
           {items.map((item) => (
             <li key={item.id}>
@@ -153,12 +155,13 @@ function ItemRow({ item }: { item: Item }) {
 
 /** Accessible loading placeholder for the items list. */
 function ItemsSkeleton() {
+  const { t } = useTranslation();
   return (
     <div
       className="space-y-2"
       role="status"
       aria-busy="true"
-      aria-label="Loading items"
+      aria-label={t('items.loadingItems')}
     >
       {[0, 1, 2, 3].map((row) => (
         <div

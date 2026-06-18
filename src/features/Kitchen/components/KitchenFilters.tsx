@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Label, Select } from '@/core/components/ui';
 import { LocationPicker } from '@features/Locations/components/LocationPicker';
 
@@ -23,12 +24,13 @@ export function KitchenFilters({
   locationId,
   onLocationChange,
 }: KitchenFiltersProps) {
+  const { t } = useTranslation();
   const withinDaysId = useId();
 
   return (
     <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="space-y-1.5">
-        <Label htmlFor={withinDaysId}>Expiring within</Label>
+        <Label htmlFor={withinDaysId}>{t('kitchen.expiringWithin')}</Label>
         <Select
           id={withinDaysId}
           value={String(withinDays)}
@@ -36,7 +38,7 @@ export function KitchenFilters({
         >
           {WITHIN_DAYS_OPTIONS.map((days) => (
             <option key={days} value={days}>
-              Next {days} days
+              {t('kitchen.nextDays', { days })}
             </option>
           ))}
         </Select>
@@ -44,7 +46,7 @@ export function KitchenFilters({
 
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label>Location</Label>
+          <Label>{t('movements.filterLocation')}</Label>
           {locationId ? (
             <Button
               type="button"
@@ -52,7 +54,7 @@ export function KitchenFilters({
               className="h-auto px-2 py-1 text-xs"
               onClick={() => onLocationChange(null)}
             >
-              Clear
+              {t('common.clear')}
             </Button>
           ) : null}
         </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { useDeleteLocation } from '@features/Locations/hooks/useDeleteLocation';
 import { getLocationErrorMessage } from '@features/Locations/lib/locationErrors';
@@ -19,6 +20,7 @@ export function DeleteLocationDialog({
   onClose,
   node,
 }: DeleteLocationDialogProps) {
+  const { t } = useTranslation();
   const deleteLocation = useDeleteLocation();
 
   function onConfirm() {
@@ -32,16 +34,16 @@ export function DeleteLocationDialog({
       open={open}
       onClose={onClose}
       role="alertdialog"
-      title={`Delete "${node.name}"?`}
+      title={t('deleteLocation.title', { name: node.name })}
       description={
         hasChildren
-          ? 'This location has nested locations. You will need to move or delete them first.'
-          : 'This action cannot be undone.'
+          ? t('deleteLocation.hasChildrenDescription')
+          : t('common.cannotBeUndone')
       }
       footer={
         <>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
@@ -50,7 +52,7 @@ export function DeleteLocationDialog({
             onClick={onConfirm}
             isLoading={deleteLocation.isPending}
           >
-            {deleteLocation.isPending ? 'Deleting...' : 'Delete'}
+            {deleteLocation.isPending ? t('common.deleting') : t('common.delete')}
           </Button>
         </>
       }

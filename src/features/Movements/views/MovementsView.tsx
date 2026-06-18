@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ClockIcon } from '@/core/components/icons';
 import { dayEndIso, dayStartIso } from '@features/Movements/lib/format';
 import {
@@ -25,6 +26,7 @@ const EMPTY_FILTERS: MovementFiltersValue = {
  * from the protected layout.
  */
 export function MovementsView() {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState<MovementFiltersValue>(EMPTY_FILTERS);
 
   const queryFilters = useMemo<
@@ -48,16 +50,16 @@ export function MovementsView() {
       <header className="space-y-1">
         <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight sm:text-3xl">
           <ClockIcon className="size-7 text-slate-400" />
-          History
+          {t('movements.title')}
         </h1>
         <p className="text-sm text-slate-600">
-          Every move, consumption and adjustment across your home.
+          {t('movements.description')}
         </p>
       </header>
 
       <MovementFilters value={filters} onChange={setFilters} />
 
-      <MovementsList filters={queryFilters} ariaLabel="Movement history" />
+      <MovementsList filters={queryFilters} ariaLabel={t('movements.ariaLabel')} />
     </section>
   );
 }

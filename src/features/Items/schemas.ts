@@ -30,7 +30,15 @@ export const itemFormSchema = z.object({
         (TRACKING_TYPE_VALUES as readonly number[]).includes(Number(value)),
       'Select a valid tracking type',
     ),
-  unit: z.string().trim().max(32, 'Unit must be at most 32 characters'),
+  unitId: z.string(),
+  minimumQuantity: z
+    .string()
+    .trim()
+    .refine(
+      (val) =>
+        val === '' || (Number.isInteger(Number(val)) && Number(val) >= 0),
+      'Must be a whole number 0 or greater',
+    ),
 });
 
 export type ItemFormValues = z.infer<typeof itemFormSchema>;
@@ -144,4 +152,10 @@ export function toNullableDate(value: string): string | null {
 export function toNullableText(value: string): string | null {
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+/** Converts a minimumQuantity form string to a number or null. Empty string → null. */
+export function toNullableMinimumQuantity(value: string): number | null {
+  const trimmed = value.trim();
+  return trimmed === '' ? null : Number(trimmed);
 }
