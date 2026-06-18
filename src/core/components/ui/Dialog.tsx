@@ -121,7 +121,8 @@ export function Dialog({
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
         className={cn(
-          'relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl',
+          'relative flex w-full max-w-md flex-col rounded-2xl border border-slate-200 bg-white shadow-xl',
+          'max-h-[calc(100vh-2rem)]',
           'focus-visible:outline-none',
         )}
       >
@@ -134,7 +135,8 @@ export function Dialog({
           <XIcon className="size-5" />
         </button>
 
-        <div className="space-y-1 pr-8">
+        {/* Header — never scrolls */}
+        <div className="flex-none space-y-1 px-6 pb-0 pr-14 pt-6">
           <h2 id={titleId} className="text-lg font-semibold text-slate-900">
             {title}
           </h2>
@@ -145,11 +147,16 @@ export function Dialog({
           ) : null}
         </div>
 
-        <div className="mt-4">{children}</div>
+        {/* Body — scrolls when content overflows */}
+        <div className="mt-4 min-h-0 flex-1 overflow-y-auto px-6 pb-6">
+          {children}
+        </div>
 
         {footer ? (
-          <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            {footer}
+          <div className="flex-none border-t border-slate-100 px-6 pb-6 pt-4">
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              {footer}
+            </div>
           </div>
         ) : null}
       </div>

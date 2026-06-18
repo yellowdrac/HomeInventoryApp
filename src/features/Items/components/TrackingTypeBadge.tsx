@@ -1,7 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import {
   TrackingType,
-  TRACKING_TYPE_LABELS,
   type TrackingType as TrackingTypeValue,
 } from '@features/Items/types';
 
@@ -15,8 +15,14 @@ const toneByType: Record<TrackingTypeValue, string> = {
   [TrackingType.Quantity]: 'bg-emerald-50 text-emerald-700',
 };
 
+const trackingTypeI18nKey: Record<TrackingTypeValue, string> = {
+  [TrackingType.Unique]: 'items.trackingTypeUnique',
+  [TrackingType.Quantity]: 'items.trackingTypeQuantity',
+};
+
 /** Small pill that labels an item's tracking strategy. */
 export function TrackingTypeBadge({ type, className }: TrackingTypeBadgeProps) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
@@ -25,7 +31,7 @@ export function TrackingTypeBadge({ type, className }: TrackingTypeBadgeProps) {
         className,
       )}
     >
-      {TRACKING_TYPE_LABELS[type]}
+      {t(trackingTypeI18nKey[type])}
     </span>
   );
 }

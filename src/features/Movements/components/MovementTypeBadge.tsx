@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import {
   MinusIcon,
@@ -9,7 +10,6 @@ import {
 } from '@/core/components/icons';
 import {
   MovementType,
-  MOVEMENT_TYPE_LABELS,
   type MovementType as MovementTypeValue,
 } from '@features/Movements/types';
 
@@ -36,8 +36,17 @@ const toneByType: Record<MovementTypeValue, string> = {
   [MovementType.Discarded]: 'bg-red-50 text-red-700',
 };
 
+const movementTypeI18nKey: Record<MovementTypeValue, string> = {
+  [MovementType.Created]: 'movements.typeCreated',
+  [MovementType.Moved]: 'movements.typeMoved',
+  [MovementType.Consumed]: 'movements.typeConsumed',
+  [MovementType.Adjusted]: 'movements.typeAdjusted',
+  [MovementType.Discarded]: 'movements.typeDiscarded',
+};
+
 /** Pill labelling a movement's type with both an icon and its text label. */
 export function MovementTypeBadge({ type, className }: MovementTypeBadgeProps) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
@@ -47,7 +56,7 @@ export function MovementTypeBadge({ type, className }: MovementTypeBadgeProps) {
       )}
     >
       <span aria-hidden="true">{iconByType[type]}</span>
-      {MOVEMENT_TYPE_LABELS[type]}
+      {t(movementTypeI18nKey[type])}
     </span>
   );
 }

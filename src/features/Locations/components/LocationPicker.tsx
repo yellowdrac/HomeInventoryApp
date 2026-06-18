@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import { Alert } from '@/core/components/ui';
 import { useLocationTree } from '@features/Locations/hooks/useLocationTree';
@@ -27,6 +28,7 @@ export function LocationPicker({
   invalid = false,
   'aria-describedby': describedBy,
 }: LocationPickerProps) {
+  const { t } = useTranslation();
   const { data, isPending, isError, error } = useLocationTree();
 
   return (
@@ -43,7 +45,7 @@ export function LocationPicker({
           className="space-y-1.5 p-1"
           role="status"
           aria-busy="true"
-          aria-label="Loading locations"
+          aria-label={t('locations.loadingLocations')}
         >
           {[0, 1, 2].map((row) => (
             <div
@@ -61,14 +63,14 @@ export function LocationPicker({
 
       {data && data.length === 0 ? (
         <p className="px-2 py-3 text-sm text-slate-500">
-          No locations yet. Create a location first to store stock.
+          {t('locationContents.noLocationsYet')}
         </p>
       ) : null}
 
       {data && data.length > 0 ? (
         <LocationTree
           nodes={data}
-          ariaLabel="Choose a location"
+          ariaLabel={t('locationTree.chooseLocation')}
           selectedId={value}
           onSelect={(node) => onChange(node.id)}
           disabledIds={disabledIds}

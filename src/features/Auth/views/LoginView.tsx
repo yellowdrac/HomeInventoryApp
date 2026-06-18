@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Button, FormField, Input, Alert } from '@/core/components/ui';
 import {
   EyeIcon,
@@ -20,6 +21,7 @@ import { loginSchema, type LoginFormValues } from '@features/Auth/schemas';
  * once the session is established.
  */
 export function LoginView() {
+  const { t } = useTranslation();
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -35,16 +37,16 @@ export function LoginView() {
 
   return (
     <AuthCard
-      title="Welcome back"
-      description="Sign in to your HomeInventory account."
+      title={t('auth.loginTitle')}
+      description={t('auth.loginDescription')}
       footer={
         <>
-          Do not have an account?{' '}
+          {t('auth.noAccount')}{' '}
           <Link
             to="/register"
             className="font-semibold text-emerald-600 hover:text-emerald-500"
           >
-            Create one
+            {t('auth.createOne')}
           </Link>
         </>
       }
@@ -54,7 +56,7 @@ export function LoginView() {
           <Alert tone="error">{getAuthErrorMessage(login.error)}</Alert>
         ) : null}
 
-        <FormField id="email" label="Email" error={errors.email?.message}>
+        <FormField id="email" label={t('auth.email')} error={errors.email?.message}>
           {(aria) => (
             <div className="relative">
               <MailIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
@@ -72,7 +74,7 @@ export function LoginView() {
 
         <FormField
           id="password"
-          label="Password"
+          label={t('auth.password')}
           error={errors.password?.message}
         >
           {(aria) => (
@@ -88,7 +90,7 @@ export function LoginView() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 aria-pressed={showPassword}
                 className="absolute right-1 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
               >
@@ -103,7 +105,7 @@ export function LoginView() {
         </FormField>
 
         <Button type="submit" className="w-full" isLoading={login.isPending}>
-          {login.isPending ? 'Signing in...' : 'Sign in'}
+          {login.isPending ? t('auth.signingIn') : t('auth.signIn')}
         </Button>
       </form>
     </AuthCard>

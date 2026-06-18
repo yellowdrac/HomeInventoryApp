@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/core/lib/cn';
 import { DoorOpenIcon, HomeIcon, UtensilsIcon } from '@/core/components/icons';
 import { useAuth } from '@features/Auth/hooks/useAuth';
@@ -29,13 +30,15 @@ function Tooltip({ label }: { label: string }) {
 
 /** Single icon-only nav link with a right-side hover tooltip. */
 function SidebarNavItem({ item }: { item: NavItemConfig }) {
+  const { t } = useTranslation();
   const Icon = item.icon;
+  const label = t(item.labelKey);
   return (
     <div className="group relative">
       <NavLink
         to={item.to}
         end={item.end ?? false}
-        aria-label={item.label}
+        aria-label={label}
         className={({ isActive }) =>
           cn(
             'flex size-10 items-center justify-center rounded-xl transition-colors',
@@ -47,13 +50,14 @@ function SidebarNavItem({ item }: { item: NavItemConfig }) {
       >
         <Icon className="size-[18px]" />
       </NavLink>
-      <Tooltip label={item.label} />
+      <Tooltip label={label} />
     </div>
   );
 }
 
 /** Kitchen nav item — same as SidebarNavItem but with an expiration-alert badge. */
 function KitchenSidebarItem() {
+  const { t } = useTranslation();
   const { data } = useKitchenOverview();
   const alertCount = (data?.expiredCount ?? 0) + (data?.expiringSoonCount ?? 0);
 
@@ -63,8 +67,8 @@ function KitchenSidebarItem() {
         to={KITCHEN_NAV_ITEM.to}
         aria-label={
           alertCount > 0
-            ? `Kitchen — ${alertCount} items need attention`
-            : 'Kitchen'
+            ? t('nav.kitchenAlertsAriaLabel', { count: alertCount })
+            : t('nav.kitchen')
         }
         className={({ isActive }) =>
           cn(
@@ -85,7 +89,7 @@ function KitchenSidebarItem() {
           </span>
         )}
       </NavLink>
-      <Tooltip label={KITCHEN_NAV_ITEM.label} />
+      <Tooltip label={t('nav.kitchen')} />
     </div>
   );
 }
@@ -96,19 +100,26 @@ function KitchenSidebarItem() {
  * badge. Search and logout live at the bottom.
  */
 export function IconSidebar() {
+  const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
   const userInitial = user?.email?.[0]?.toUpperCase() ?? '?';
 
+  const toggleLang = () => {
+    const next = i18n.language === 'en' ? 'es' : 'en';
+    void i18n.changeLanguage(next);
+    localStorage.setItem('lang', next);
+  };
+
   return (
     <aside
-      aria-label="Main navigation"
+      aria-label={t('nav.mainNavigation')}
       className="hidden sm:flex w-14 shrink-0 sticky top-0 h-screen flex-col border-r border-slate-200 bg-white"
     >
       {/* Logo mark */}
       <div className="flex h-14 shrink-0 items-center justify-center border-b border-slate-100">
         <NavLink
           to="/"
-          aria-label="Dashboard"
+          aria-label={t('nav.dashboard')}
           className="flex size-9 items-center justify-center rounded-xl bg-emerald-600 text-white transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
         >
           <HomeIcon className="size-[18px]" />
@@ -129,18 +140,27 @@ export function IconSidebar() {
         <KitchenSidebarItem />
       </nav>
 
-      {/* Bottom: search + logout */}
+      {/* Bottom: search + lang toggle + logout */}
       <div className="flex shrink-0 flex-col items-center gap-1 border-t border-slate-100 p-2 pb-3">
         <div className="group relative">
           <GlobalSearch compact />
-          <Tooltip label="Search  Ctrl K" />
+          <Tooltip label={t('nav.searchShortcut')} />
         </div>
+
+        <button
+          type="button"
+          onClick={toggleLang}
+          className="rounded-md px-2 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+          aria-label={i18n.language === 'en' ? t('nav.switchToSpanish') : t('nav.switchToEnglish')}
+        >
+          {i18n.language === 'en' ? 'ES' : 'EN'}
+        </button>
 
         <div className="group relative">
           <button
             type="button"
             onClick={logout}
-            aria-label={`Log out (${user?.email ?? ''})`}
+            aria-label={t('nav.logOutAriaLabel', { email: user?.email ?? '' })}
             className="flex size-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 transition-colors hover:bg-red-100 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
           >
             {userInitial}
@@ -151,7 +171,7 @@ export function IconSidebar() {
           >
             <span className="flex items-center gap-1.5">
               <DoorOpenIcon className="size-3" />
-              Log out
+              {t('nav.logOut')}
             </span>
             <span
               aria-hidden="true"

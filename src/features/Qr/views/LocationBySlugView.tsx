@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button } from '@/core/components/ui';
 import {
   ChevronRightIcon,
@@ -17,6 +18,7 @@ import { LocationQrDialog } from '@features/Qr/components/LocationQrDialog';
  * resolve within the household.
  */
 export function LocationBySlugView() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data, isPending, isError } = useLocationBySlug(slug);
   const [qrOpen, setQrOpen] = useState(false);
@@ -27,7 +29,7 @@ export function LocationBySlugView() {
         className="h-40 animate-pulse rounded-2xl bg-slate-100"
         role="status"
         aria-busy="true"
-        aria-label="Resolving location"
+        aria-label={t('qr.resolvingLocation')}
       />
     );
   }
@@ -36,14 +38,13 @@ export function LocationBySlugView() {
     return (
       <section className="space-y-4">
         <Alert tone="error">
-          We could not find a location for this code. It may belong to another
-          household, or the location may have been removed.
+          {t('qr.locationNotFound')}
         </Alert>
         <Link
           to="/locations"
           className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-600"
         >
-          Go to locations
+          {t('qr.goToLocations')}
           <ChevronRightIcon className="size-4" />
         </Link>
       </section>
@@ -95,7 +96,7 @@ export function LocationBySlugView() {
           </h1>
           <Button variant="secondary" onClick={() => setQrOpen(true)}>
             <QrCodeIcon className="size-4" />
-            Show QR
+            {t('locationTree.showQr')}
           </Button>
         </div>
       </header>

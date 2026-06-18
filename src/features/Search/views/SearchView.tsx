@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import { useSearchParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Input, Label } from '@/core/components/ui';
 import { SearchIcon } from '@/core/components/icons';
 import {
@@ -15,6 +16,7 @@ import { SearchResultCard } from '@features/Search/components/SearchResultCard';
  * breadcrumb so the answer is visible at a glance.
  */
 export function SearchView() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
   const searchId = useId();
@@ -53,15 +55,15 @@ export function SearchView() {
   return (
     <section className="space-y-6">
       <header className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Search</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t('search.title')}</h1>
         <p className="text-sm text-slate-600">
-          Find where any item is stored across your home.
+          {t('search.description')}
         </p>
       </header>
 
       <div className="relative">
         <Label htmlFor={searchId} className="sr-only">
-          Search inventory
+          {t('search.label')}
         </Label>
         <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-400" />
         <Input
@@ -69,7 +71,7 @@ export function SearchView() {
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search for an item by name or barcode"
+          placeholder={t('search.placeholder')}
           autoComplete="off"
           autoFocus
           className="h-12 pl-11 text-base"
@@ -82,7 +84,7 @@ export function SearchView() {
 
       {!isEnabled ? (
         <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-600">
-          Type at least {MIN_SEARCH_LENGTH} characters to search.
+          {t('search.minChars', { count: MIN_SEARCH_LENGTH })}
         </p>
       ) : null}
 
@@ -93,14 +95,14 @@ export function SearchView() {
           className="rounded-2xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-600"
           role="status"
         >
-          No results for &ldquo;{debouncedQuery}&rdquo;. Try a different spelling.
+          {t('search.noResults', { query: debouncedQuery })}
         </p>
       ) : null}
 
       {showResults ? (
         <ul
           className="space-y-3"
-          aria-label="Search results"
+          aria-label={t('search.resultsLabel')}
           aria-busy={isPlaceholderData || undefined}
         >
           {results.map((result) => (
@@ -116,12 +118,13 @@ export function SearchView() {
 
 /** Accessible loading placeholder for the search results. */
 function SearchSkeleton() {
+  const { t } = useTranslation();
   return (
     <div
       className="space-y-3"
       role="status"
       aria-busy="true"
-      aria-label="Searching"
+      aria-label={t('search.searching')}
     >
       {[0, 1, 2].map((row) => (
         <div

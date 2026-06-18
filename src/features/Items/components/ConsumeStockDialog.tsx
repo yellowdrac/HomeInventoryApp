@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog, FormField, Input } from '@/core/components/ui';
 import { useConsumeStock } from '@features/Items/hooks/useConsumeStock';
 import { getItemErrorMessage } from '@features/Items/lib/itemErrors';
@@ -30,6 +31,7 @@ export function ConsumeStockDialog({
   lot,
   unit,
 }: ConsumeStockDialogProps) {
+  const { t } = useTranslation();
   const consumeStock = useConsumeStock();
   const available = lot.quantity;
   const schema = useMemo(() => createConsumeStockSchema(available), [available]);
@@ -61,10 +63,8 @@ export function ConsumeStockDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={`Consume "${lot.itemName}"`}
-      description={`Currently ${formatQuantity(available, unit)} in ${
-        lot.locationName
-      }.`}
+      title={t('stock.consumeTitle', { name: lot.itemName })}
+      description={t('stock.currentlyInLocation', { quantity: formatQuantity(available, unit), location: lot.locationName })}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {consumeStock.isError ? (
@@ -73,8 +73,8 @@ export function ConsumeStockDialog({
 
         <FormField
           id="consume-stock-quantity"
-          label="Quantity"
-          hint={`Up to ${formatQuantity(available, unit)} available.`}
+          label={t('stock.quantity')}
+          hint={t('stock.upToAvailable', { quantity: formatQuantity(available, unit) })}
           error={errors.quantity?.message}
         >
           {(aria) => (
@@ -92,14 +92,14 @@ export function ConsumeStockDialog({
 
         <FormField
           id="consume-stock-reason"
-          label="Reason"
-          hint="Optional"
+          label={t('stock.reason')}
+          hint={t('common.optional')}
           error={errors.reason?.message}
         >
           {(aria) => (
             <Input
               type="text"
-              placeholder="e.g. cooked for dinner"
+              placeholder={t('stock.reasonPlaceholderConsume')}
               {...aria}
               {...register('reason')}
             />
@@ -108,10 +108,10 @@ export function ConsumeStockDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={consumeStock.isPending}>
-            {consumeStock.isPending ? 'Consuming...' : 'Consume'}
+            {consumeStock.isPending ? t('stock.consuming') : t('stock.consume')}
           </Button>
         </div>
       </form>

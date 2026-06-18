@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import {
   MinusIcon,
   MoreVerticalIcon,
@@ -28,17 +29,18 @@ export function ExpiringLotList({
   onConsume,
   onDiscard,
 }: ExpiringLotListProps) {
+  const { t } = useTranslation();
   return (
-    <ul className="space-y-2" aria-label="Perishable stock">
+    <ul className="space-y-2" aria-label={t('kitchen.perishableStock')}>
       {lots.map((lot) => {
         const menuItems: DropdownMenuItem[] = [
           {
-            label: 'Consume',
+            label: t('stock.consume'),
             icon: <MinusIcon className="size-4" />,
             onSelect: () => onConsume(lot),
           },
           {
-            label: 'Discard',
+            label: t('stock.discard'),
             icon: <TrashIcon className="size-4" />,
             tone: 'danger',
             onSelect: () => onDiscard(lot),
@@ -75,7 +77,7 @@ export function ExpiringLotList({
                 />
 
                 <p className="text-xs text-slate-500">
-                  Expires {formatDate(lot.expirationDate)}
+                  {t('stock.expires', { date: formatDate(lot.expirationDate) })}
                   <span aria-hidden="true"> · </span>
                   <span className="font-medium text-slate-600">
                     {formatDaysUntil(lot.daysUntilExpiry)}
@@ -88,7 +90,7 @@ export function ExpiringLotList({
                   {formatQuantity(lot.quantity)}
                 </span>
                 <DropdownMenu
-                  triggerLabel={`Actions for ${lot.itemName} in ${lot.locationName}`}
+                  triggerLabel={t('locationContents.actionsForItem', { item: lot.itemName, location: lot.locationName })}
                   trigger={<MoreVerticalIcon className="size-5" />}
                   items={menuItems}
                 />

@@ -30,7 +30,7 @@ export const itemFormSchema = z.object({
         (TRACKING_TYPE_VALUES as readonly number[]).includes(Number(value)),
       'Select a valid tracking type',
     ),
-  unit: z.string().trim().max(32, 'Unit must be at most 32 characters'),
+  unitId: z.string(),
   minimumQuantity: z
     .string()
     .trim()

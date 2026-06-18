@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ArrowRightIcon } from '@/core/components/icons';
 import { useDashboard } from '@features/Dashboard/hooks/useDashboard';
 import { DashboardSummaryCards } from '@features/Dashboard/components/DashboardSummaryCards';
@@ -11,6 +12,7 @@ import { RecentMovements } from '@features/Dashboard/components/RecentMovements'
  * protected layout.
  */
 export function DashboardView() {
+  const { t } = useTranslation();
   const {
     summary,
     recentMovements,
@@ -25,10 +27,10 @@ export function DashboardView() {
     <section className="space-y-8">
       <header className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Dashboard
+          {t('dashboard.title')}
         </h1>
         <p className="text-slate-600">
-          An overview of your household inventory.
+          {t('dashboard.description')}
         </p>
       </header>
 
@@ -43,13 +45,13 @@ export function DashboardView() {
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-slate-900">
-            Recent movements
+            {t('dashboard.recentMovements')}
           </h2>
           <Link
             to="/movements"
             className="inline-flex items-center gap-1 rounded-md text-sm font-medium text-emerald-700 transition-colors hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
           >
-            View all
+            {t('dashboard.viewAll')}
             <ArrowRightIcon className="size-4" aria-hidden="true" />
           </Link>
         </div>

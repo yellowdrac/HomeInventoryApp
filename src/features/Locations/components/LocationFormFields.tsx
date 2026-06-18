@@ -1,4 +1,5 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { FormField, Input, Select } from '@/core/components/ui';
 import {
   LOCATION_TYPE_VALUES,
@@ -19,16 +20,17 @@ export function LocationFormFields({
   errors,
   idPrefix,
 }: LocationFormFieldsProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4">
       <FormField
         id={`${idPrefix}-name`}
-        label="Name"
+        label={t('locationForm.name')}
         error={errors.name?.message}
       >
         {(aria) => (
           <Input
-            placeholder="e.g. Kitchen"
+            placeholder={t('locationForm.namePlaceholder')}
             autoComplete="off"
             {...aria}
             {...register('name')}
@@ -38,7 +40,7 @@ export function LocationFormFields({
 
       <FormField
         id={`${idPrefix}-type`}
-        label="Type"
+        label={t('locationForm.type')}
         error={errors.type?.message}
       >
         {(aria) => (

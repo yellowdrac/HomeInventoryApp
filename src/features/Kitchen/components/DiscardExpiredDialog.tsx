@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog } from '@/core/components/ui';
 import { useDiscardExpired } from '@features/Kitchen/hooks/useDiscardExpired';
 import { localDateString } from '@features/Kitchen/lib/asOfDate';
@@ -22,6 +23,7 @@ export function DiscardExpiredDialog({
   expiredCount,
   locationId,
 }: DiscardExpiredDialogProps) {
+  const { t } = useTranslation();
   const discardExpired = useDiscardExpired();
 
   function onConfirm() {
@@ -34,19 +36,17 @@ export function DiscardExpiredDialog({
     );
   }
 
-  const lotsLabel = expiredCount === 1 ? '1 expired lot' : `${expiredCount} expired lots`;
-
   return (
     <Dialog
       open={open}
       onClose={onClose}
       role="alertdialog"
-      title="Discard all expired stock?"
-      description={`This throws away ${lotsLabel} and records a movement for each. This action cannot be undone.`}
+      title={t('kitchen.discardAllTitle')}
+      description={t('kitchen.discardAllDescription', { count: expiredCount })}
       footer={
         <>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
@@ -55,7 +55,7 @@ export function DiscardExpiredDialog({
             onClick={onConfirm}
             isLoading={discardExpired.isPending}
           >
-            {discardExpired.isPending ? 'Discarding...' : 'Discard all'}
+            {discardExpired.isPending ? t('stock.discarding') : t('kitchen.discardAll')}
           </Button>
         </>
       }

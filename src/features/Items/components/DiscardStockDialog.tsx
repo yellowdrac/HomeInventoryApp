@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog, FormField, Input } from '@/core/components/ui';
 import { useDiscardStock } from '@features/Items/hooks/useDiscardStock';
 import { getItemErrorMessage } from '@features/Items/lib/itemErrors';
@@ -31,6 +32,7 @@ export function DiscardStockDialog({
   lot,
   unit,
 }: DiscardStockDialogProps) {
+  const { t } = useTranslation();
   const discardStock = useDiscardStock();
   const available = lot.quantity;
   const schema = useMemo(() => createDiscardStockSchema(available), [available]);
@@ -63,11 +65,8 @@ export function DiscardStockDialog({
       open={open}
       onClose={onClose}
       role="alertdialog"
-      title={`Discard "${lot.itemName}"?`}
-      description={`This throws away stock in ${lot.locationName} and cannot be undone. Up to ${formatQuantity(
-        available,
-        unit,
-      )} available.`}
+      title={t('stock.discardTitle', { name: lot.itemName })}
+      description={t('stock.discardDescription', { location: lot.locationName, quantity: formatQuantity(available, unit) })}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {discardStock.isError ? (
@@ -76,7 +75,7 @@ export function DiscardStockDialog({
 
         <FormField
           id="discard-stock-quantity"
-          label="Quantity"
+          label={t('stock.quantity')}
           error={errors.quantity?.message}
         >
           {(aria) => (
@@ -94,14 +93,14 @@ export function DiscardStockDialog({
 
         <FormField
           id="discard-stock-reason"
-          label="Reason"
-          hint="Optional"
+          label={t('stock.reason')}
+          hint={t('common.optional')}
           error={errors.reason?.message}
         >
           {(aria) => (
             <Input
               type="text"
-              placeholder="e.g. expired"
+              placeholder={t('stock.reasonPlaceholderDiscard')}
               {...aria}
               {...register('reason')}
             />
@@ -110,7 +109,7 @@ export function DiscardStockDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"
@@ -118,7 +117,7 @@ export function DiscardStockDialog({
             className="bg-red-600 hover:bg-red-500 focus-visible:ring-red-600"
             isLoading={discardStock.isPending}
           >
-            {discardStock.isPending ? 'Discarding...' : 'Discard'}
+            {discardStock.isPending ? t('stock.discarding') : t('stock.discard')}
           </Button>
         </div>
       </form>

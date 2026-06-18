@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button } from '@/core/components/ui';
 import { PrinterIcon } from '@/core/components/icons';
 import { useLocationTree } from '@features/Locations/hooks/useLocationTree';
@@ -16,6 +17,7 @@ import { LocationLabel } from '@features/Qr/components/LocationLabel';
  * before printing. The print stylesheet hides everything except the grid.
  */
 export function PrintLabelsView() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const initialScope = searchParams.get('location');
 
@@ -63,12 +65,12 @@ export function PrintLabelsView() {
       <header className="print-hidden flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Print QR labels
+            {t('qr.printLabels')}
           </h1>
           <p className="text-sm text-slate-600">
             {scopeName
-              ? `Labels for ${scopeName} and everything inside it.`
-              : 'Labels for every location in your home.'}
+              ? t('qr.labelsForScope', { name: scopeName })
+              : t('qr.labelsForAll')}
           </p>
         </div>
         <Button
@@ -76,24 +78,24 @@ export function PrintLabelsView() {
           disabled={includedCount === 0}
         >
           <PrinterIcon className="size-4" />
-          Print {includedCount > 0 ? `(${includedCount})` : ''}
+          {includedCount > 0 ? t('qr.printCount', { count: includedCount }) : t('qr.print')}
         </Button>
       </header>
 
       <div className="print-hidden grid gap-4 lg:grid-cols-5">
         <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm lg:col-span-2">
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Scope</h2>
+            <h2 className="text-sm font-semibold text-slate-900">{t('qr.scope')}</h2>
             {scopeId ? (
               <button
                 type="button"
                 onClick={() => setScopeId(null)}
                 className="rounded text-xs font-medium text-emerald-700 hover:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
               >
-                All locations
+                {t('qr.allLocations')}
               </button>
             ) : (
-              <span className="text-xs text-slate-400">All locations</span>
+              <span className="text-xs text-slate-400">{t('qr.allLocations')}</span>
             )}
           </div>
           {tree.data && tree.data.length > 0 ? (
@@ -102,18 +104,18 @@ export function PrintLabelsView() {
               selectedId={scopeId}
               onSelect={handleSelectScope}
               defaultExpandedIds={expandedScopePath}
-              ariaLabel="Choose a location to scope the labels"
+              ariaLabel={t('locationTree.chooseLocation')}
             />
           ) : (
             <p className="px-1 py-4 text-sm text-slate-500">
-              No locations yet.
+              {t('locationsEmpty.title')}
             </p>
           )}
         </div>
 
         <div className="lg:col-span-3">
           <p className="text-sm text-slate-600">
-            Uncheck any label you do not want to print.
+            {t('qr.uncheckHint')}
           </p>
         </div>
       </div>
@@ -123,7 +125,7 @@ export function PrintLabelsView() {
           className="h-40 animate-pulse rounded-2xl bg-slate-100"
           role="status"
           aria-busy="true"
-          aria-label="Loading labels"
+          aria-label={t('qr.loadingLabels')}
         />
       ) : null}
 
@@ -132,7 +134,7 @@ export function PrintLabelsView() {
       ) : null}
 
       {data && data.length === 0 ? (
-        <Alert tone="info">There are no locations to print here yet.</Alert>
+        <Alert tone="info">{t('qr.noLocationsToPrint')}</Alert>
       ) : null}
 
       {data && data.length > 0 ? (
@@ -154,7 +156,7 @@ export function PrintLabelsView() {
                     onChange={() => toggle(loc.id)}
                     className="size-4 rounded border-slate-300 text-emerald-600 focus-visible:ring-emerald-600"
                   />
-                  Include
+                  {t('qr.include')}
                 </label>
                 <LocationLabel
                   name={loc.name}

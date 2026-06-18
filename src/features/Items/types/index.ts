@@ -43,6 +43,15 @@ export interface StockLot {
   acquiredDate: string | null;
 }
 
+/** A predefined unit of measure from the catalog (mirrors `UnitDto`). */
+export interface UnitDto {
+  id: string;
+  name: string;
+  symbol: string;
+  category: string;
+  sortOrder: number;
+}
+
 /** List read model of an item, with its total quantity across all lots. */
 export interface Item {
   id: string;
@@ -50,6 +59,7 @@ export interface Item {
   category: string | null;
   barcode: string | null;
   trackingType: TrackingType;
+  unitId: string | null;
   unit: string | null;
   photoUrl: string | null;
   totalQuantity: number;
@@ -94,7 +104,7 @@ export interface CreateItemRequest {
   category: string | null;
   barcode: string | null;
   trackingType: TrackingType;
-  unit: string | null;
+  unitId: string | null;
   photoUrl: string | null;
   minimumQuantity: number | null;
 }

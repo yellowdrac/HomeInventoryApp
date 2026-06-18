@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert } from '@/core/components/ui';
 import { ClockIcon } from '@/core/components/icons';
 import { MovementTypeBadge } from '@features/Movements/components/MovementTypeBadge';
@@ -23,13 +24,15 @@ export function RecentMovements({
   isError,
   error,
 }: RecentMovementsProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <div
         className="space-y-2"
         role="status"
         aria-busy="true"
-        aria-label="Loading recent movements"
+        aria-label={t('dashboard.loadingRecentMovements')}
       >
         {[0, 1, 2].map((row) => (
           <div
@@ -51,13 +54,13 @@ export function RecentMovements({
         className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-600"
         role="status"
       >
-        No movements recorded yet.
+        {t('dashboard.noMovements')}
       </p>
     );
   }
 
   return (
-    <ul className="space-y-2" aria-label="Recent movements">
+    <ul className="space-y-2" aria-label={t('dashboard.recentMovements')}>
       {movements.map((movement) => (
         <li
           key={movement.id}

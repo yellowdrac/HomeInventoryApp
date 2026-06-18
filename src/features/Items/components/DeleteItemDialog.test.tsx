@@ -13,6 +13,7 @@ const stockedItem: Item = {
   category: null,
   barcode: null,
   trackingType: TrackingType.Quantity,
+  unitId: null,
   unit: 'L',
   photoUrl: null,
   totalQuantity: 3,

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { Alert, Button, Dialog, FormField, Input } from '@/core/components/ui';
 import { LocationPicker } from '@features/Locations/components/LocationPicker';
 import { useMoveStock } from '@features/Items/hooks/useMoveStock';
@@ -34,6 +35,7 @@ export function MoveStockDialog({
   isUnique = false,
   unit,
 }: MoveStockDialogProps) {
+  const { t } = useTranslation();
   const moveStock = useMoveStock();
   const available = lot.quantity;
   const schema = useMemo(() => createMoveStockSchema(available), [available]);
@@ -73,10 +75,8 @@ export function MoveStockDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={`Move "${lot.itemName}"`}
-      description={`Currently ${formatQuantity(available, unit)} in ${
-        lot.locationName
-      }.`}
+      title={t('stock.moveTitle', { name: lot.itemName })}
+      description={t('stock.currentlyInLocation', { quantity: formatQuantity(available, unit), location: lot.locationName })}
     >
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         {moveStock.isError ? (
@@ -85,7 +85,7 @@ export function MoveStockDialog({
 
         <FormField
           id="move-stock-destination"
-          label="Destination"
+          label={t('stock.destination')}
           error={errors.toLocationId?.message}
         >
           {(aria) => (
@@ -107,11 +107,11 @@ export function MoveStockDialog({
 
         <FormField
           id="move-stock-quantity"
-          label="Quantity"
+          label={t('stock.quantity')}
           hint={
             isUnique
-              ? 'Unique items move as a whole lot.'
-              : `Up to ${formatQuantity(available, unit)} available.`
+              ? t('stock.uniqueMoveHint')
+              : t('stock.upToAvailable', { quantity: formatQuantity(available, unit) })
           }
           error={isUnique ? undefined : errors.quantity?.message}
         >
@@ -131,10 +131,10 @@ export function MoveStockDialog({
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" isLoading={moveStock.isPending}>
-            {moveStock.isPending ? 'Moving...' : 'Move stock'}
+            {moveStock.isPending ? t('stock.moving') : t('stock.moveStock')}
           </Button>
         </div>
       </form>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import {
   PlusIcon,
   ScanIcon,
@@ -9,8 +10,8 @@ import { cn } from '@/core/lib/cn';
 
 interface QuickAction {
   to: string;
-  label: string;
-  description: string;
+  labelKey: string;
+  descriptionKey: string;
   icon: React.ReactNode;
   tone: string;
 }
@@ -19,29 +20,29 @@ interface QuickAction {
 const QUICK_ACTIONS: QuickAction[] = [
   {
     to: '/search',
-    label: 'Search',
-    description: 'Find an item across the home',
+    labelKey: 'quickActions.search',
+    descriptionKey: 'quickActions.searchDescription',
     icon: <SearchIcon className="size-5" />,
     tone: 'bg-emerald-50 text-emerald-700',
   },
   {
     to: '/scan',
-    label: 'Scan',
-    description: 'Open a location by QR code',
+    labelKey: 'quickActions.scan',
+    descriptionKey: 'quickActions.scanDescription',
     icon: <ScanIcon className="size-5" />,
     tone: 'bg-sky-50 text-sky-700',
   },
   {
     to: '/items',
-    label: 'Add item',
-    description: 'Register something new',
+    labelKey: 'quickActions.addItem',
+    descriptionKey: 'quickActions.addItemDescription',
     icon: <PlusIcon className="size-5" />,
     tone: 'bg-violet-50 text-violet-700',
   },
   {
     to: '/kitchen',
-    label: 'Kitchen',
-    description: 'Review perishables',
+    labelKey: 'quickActions.kitchen',
+    descriptionKey: 'quickActions.kitchenDescription',
     icon: <UtensilsIcon className="size-5" />,
     tone: 'bg-amber-50 text-amber-700',
   },
@@ -49,8 +50,10 @@ const QUICK_ACTIONS: QuickAction[] = [
 
 /** Grid of shortcut cards that navigate to the app's primary destinations. */
 export function QuickActions() {
+  const { t } = useTranslation();
+
   return (
-    <nav aria-label="Quick actions">
+    <nav aria-label={t('quickActions.label')}>
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {QUICK_ACTIONS.map((action) => (
           <li key={action.to}>
@@ -69,10 +72,10 @@ export function QuickActions() {
               </span>
               <span className="min-w-0">
                 <span className="block font-semibold text-slate-900">
-                  {action.label}
+                  {t(action.labelKey)}
                 </span>
                 <span className="block truncate text-sm text-slate-600">
-                  {action.description}
+                  {t(action.descriptionKey)}
                 </span>
               </span>
             </Link>

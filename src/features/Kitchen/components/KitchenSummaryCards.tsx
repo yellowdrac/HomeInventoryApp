@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { AlertTriangleIcon, ClockIcon } from '@/core/components/icons';
 import { cn } from '@/core/lib/cn';
 import type { KitchenOverview } from '@features/Kitchen/types';
@@ -14,13 +15,14 @@ export function KitchenSummaryCards({
   withinDays,
   isLoading,
 }: KitchenSummaryCardsProps) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
       <div
         className="grid gap-3 sm:grid-cols-2"
         role="status"
         aria-busy="true"
-        aria-label="Loading summary"
+        aria-label={t('kitchen.loadingSummary')}
       >
         {[0, 1].map((card) => (
           <div
@@ -35,13 +37,13 @@ export function KitchenSummaryCards({
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <SummaryCard
-        label="Expired"
+        label={t('kitchen.expired')}
         count={overview?.expiredCount ?? 0}
         icon={<AlertTriangleIcon className="size-5" />}
         tone="bg-red-50 text-red-700"
       />
       <SummaryCard
-        label={`Expiring soon (next ${withinDays} days)`}
+        label={t('kitchen.expiringSoon', { days: withinDays })}
         count={overview?.expiringSoonCount ?? 0}
         icon={<ClockIcon className="size-5" />}
         tone="bg-amber-50 text-amber-700"

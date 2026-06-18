@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Alert, Dialog } from '@/core/components/ui';
 import { cn } from '@/core/lib/cn';
 import { MapPinIcon, PackageIcon, SearchIcon } from '@/core/components/icons';
@@ -28,6 +29,7 @@ interface GlobalSearchProps {
  * Ctrl/Cmd+K. Pass `compact` to render as an icon-only button for tight spaces.
  */
 export function GlobalSearch({ compact = false }: GlobalSearchProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export function GlobalSearch({ compact = false }: GlobalSearchProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Search inventory"
+        aria-label={t('search.title')}
         className={
           compact
             ? 'flex size-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600'
@@ -63,7 +65,7 @@ export function GlobalSearch({ compact = false }: GlobalSearchProps) {
         <SearchIcon className="size-4 shrink-0" />
         {!compact && (
           <>
-            <span className="hidden sm:inline">Search</span>
+            <span className="hidden sm:inline">{t('search.label')}</span>
             <kbd className="hidden rounded border border-slate-200 bg-slate-50 px-1.5 text-xs font-medium text-slate-400 sm:inline">
               Ctrl K
             </kbd>
@@ -86,6 +88,7 @@ type PaletteOption =
 
 function SearchPalette({ onClose }: SearchPaletteProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -170,8 +173,8 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
     <Dialog
       open
       onClose={onClose}
-      title="Search inventory"
-      description="Find where an item is stored, or open the full results."
+      title={t('search.title')}
+      description={t('search.description')}
       initialFocusRef={inputRef}
     >
       <div className="space-y-3">
@@ -187,12 +190,12 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
               options.length > 0 ? optionId(activeIndex) : undefined
             }
             aria-autocomplete="list"
-            aria-label="Search inventory"
+            aria-label={t('search.title')}
             autoComplete="off"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={onInputKeyDown}
-            placeholder="Search for an item"
+            placeholder={t('search.placeholder')}
             className="h-11 w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 text-sm text-slate-900 shadow-sm focus-visible:border-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
           />
         </div>
@@ -203,19 +206,19 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
 
         {showHint ? (
           <p className="px-1 py-3 text-sm text-slate-500">
-            Type at least {MIN_SEARCH_LENGTH} characters to search.
+            {t('search.minChars', { count: MIN_SEARCH_LENGTH })}
           </p>
         ) : null}
 
         {showLoading ? (
           <p className="px-1 py-3 text-sm text-slate-500" role="status">
-            Searching...
+            {t('search.searching')}
           </p>
         ) : null}
 
         {showNoResults ? (
           <p className="px-1 pt-3 text-sm text-slate-500" role="status">
-            No matches. Press Enter to search everywhere.
+            {t('search.noMatchesPressEnter')}
           </p>
         ) : null}
 
@@ -223,7 +226,7 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
           <ul
             id={listboxId}
             role="listbox"
-            aria-label="Search results"
+            aria-label={t('search.resultsLabel')}
             className="max-h-72 space-y-1 overflow-y-auto"
           >
             {options.map((option, index) => (
@@ -244,7 +247,7 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
                 ) : (
                   <span className="flex items-center gap-2 font-medium text-emerald-700">
                     <SearchIcon className="size-4" />
-                    Search everywhere for &ldquo;{trimmed}&rdquo;
+                    {t('search.searchEverywhereFor', { query: trimmed })}
                   </span>
                 )}
               </li>
@@ -258,6 +261,7 @@ function SearchPalette({ onClose }: SearchPaletteProps) {
 
 /** A single quick-match row: item name plus its primary location path. */
 function ItemOption({ result }: { result: SearchResultItem }) {
+  const { t } = useTranslation();
   const primary = result.placements[0];
   const path = primary?.breadcrumb.map((entry) => entry.name).join(' › ');
 
@@ -280,7 +284,7 @@ function ItemOption({ result }: { result: SearchResultItem }) {
           </span>
         ) : (
           <span className="block truncate text-xs text-slate-400">
-            Not stored anywhere yet
+            {t('search.notStoredYet')}
           </span>
         )}
       </span>
