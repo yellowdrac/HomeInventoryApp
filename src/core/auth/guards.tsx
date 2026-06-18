@@ -38,9 +38,9 @@ export function RequireAuth() {
   const location = useLocation();
 
   useEffect(() => {
+    const { isInitializing, refreshToken, setSession, clearSession } = useAuthStore.getState();
     if (!isInitializing) return;
 
-    const { refreshToken, setSession, clearSession } = useAuthStore.getState();
     if (!refreshToken) {
       clearSession();
       return;
